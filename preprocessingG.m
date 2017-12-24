@@ -3,8 +3,8 @@ ds = load_dataset(id);
 
 images = ds.Image;
 
-if ~exist('datasets/1/tmp/gray', 'dir')
-    mkdir('datasets/1/tmp/gray');
+if ~exist('datasets/1/tmp/projected', 'dir')
+    mkdir('datasets/1/tmp/projected');
 end
 
 if ~exist('datasets/1/tmp/bw80', 'dir')
