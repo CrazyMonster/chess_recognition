@@ -6,7 +6,7 @@ images = ds.Image;
 control_points = zeros(size(ds, 1), 4, 2);
 
 for i = 1
-   im = imread(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
+   im = imread_rotate(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
    
    for j=1:4
        [x, y] = getline_zoom(im);
