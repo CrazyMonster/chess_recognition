@@ -1,7 +1,12 @@
-id = 1;
+id = 2;
 ds = load_dataset(id);
 
-for i=size(ds, 1)
-   im = imread(['datasets/' id '/images/' ds.Image{i} '.jpg']);
+images = ds.Image;
+
+parfor i = 1:size(ds, 1)
+   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
    
+   bw = sauvola(im, [80,80]);
+   
+   imwrite(bw, ['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
 end
