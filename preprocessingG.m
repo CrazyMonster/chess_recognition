@@ -1,39 +1,44 @@
-id = 1;
+id = 2;
 ds = load_dataset(id);
 
 images = ds.Image;
 
-if ~exist('datasets/1/tmp/projected', 'dir')
-    mkdir('datasets/1/tmp/projected');
+if ~exist('datasets/2/tmp/gray', 'dir')
+    mkdir('datasets/2/tmp/gray');
 end
 
-if ~exist('datasets/1/tmp/bw80', 'dir')
-    mkdir('datasets/1/tmp/bw80');
+
+if ~exist('datasets/2/tmp/projected', 'dir')
+    mkdir('datasets/2/tmp/projected');
 end
 
-if ~exist('datasets/1/tmp/edge', 'dir')
-    mkdir('datasets/1/tmp/edge');
+if ~exist('datasets/2/tmp/bw80', 'dir')
+    mkdir('datasets/2/tmp/bw80');
 end
 
-if ~exist('datasets/1/tmp/sharpRadius', 'dir')
-    mkdir('datasets/1/tmp/sharpRadius');
+if ~exist('datasets/2/tmp/edge', 'dir')
+    mkdir('datasets/2/tmp/edge');
 end
 
-if ~exist('datasets/1/tmp/sharpAmount', 'dir')
-    mkdir('datasets/1/tmp/sharpAmount');
+if ~exist('datasets/2/tmp/sharpRadius', 'dir')
+    mkdir('datasets/2/tmp/sharpRadius');
 end
 
-if ~exist('datasets/1/tmp/sharpThreshold', 'dir')
-    mkdir('datasets/1/tmp/sharpThreshold');
-end
-
-if ~exist('datasets/1/tmp/sharpGauss', 'dir')
-    mkdir('datasets/1/tmp/sharpGauss');
-end
-
-if ~exist('datasets/1/tmp/sharp', 'dir')
-    mkdir('datasets/1/tmp/sharp');
-end
+% if ~exist('datasets/2/tmp/sharpAmount', 'dir')
+%     mkdir('datasets/2/tmp/sharpAmount');
+% end
+% 
+% if ~exist('datasets/2/tmp/sharpThreshold', 'dir')
+%     mkdir('datasets/2/tmp/sharpThreshold');
+% end
+% 
+% if ~exist('datasets/2/tmp/sharpGauss', 'dir')
+%     mkdir('datasets/2/tmp/sharpGauss');
+% end
+% 
+% if ~exist('datasets/2/tmp/sharp', 'dir')
+%     mkdir('datasets/2/tmp/sharp');
+% end
 
 %%
 parfor i = 1:size(ds, 1)
@@ -45,13 +50,13 @@ parfor i = 1:size(ds, 1)
 end
 
 %%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-   
-   sharpened = imsharpen(im);
-   
-   imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpened/' images{i} '.jpg']);
-end
+% parfor i = 1:size(ds, 1)
+%    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+%    
+%    sharpened = imsharpen(im);
+%    
+%    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpened/' images{i} '.jpg']);
+% end
 %%
 parfor i = 1:size(ds, 1)
    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
@@ -61,40 +66,40 @@ parfor i = 1:size(ds, 1)
    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
 end
 %%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-   
-   sharpened = imsharpen(im, 'Amount', 2);
-   
-   imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpAmount/' images{i} '.jpg']);
-end
-%%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-   
-   sharpened = imsharpen(im, 'Threshold', 0.7);
-   
-   imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpThreshold/' images{i} '.jpg']);
-end
-
-%%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-   
-   mask = padarray(2,[2 2]) - fspecial('gaussian' ,[5 5],2);
-   sharpened = imfilter(im, mask);
-   
-   imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpGauss/' images{i} '.jpg']);
-end
-%%
-parfor i = 1:size(ds, 1)
-    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-   
-    mask = fspecial('unsharp', 1);
-    sharpened = imfilter(im, mask);
-   
-   imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharp/' images{i} '.jpg']);
-end
+% parfor i = 1:size(ds, 1)
+%    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+%    
+%    sharpened = imsharpen(im, 'Amount', 2);
+%    
+%    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpAmount/' images{i} '.jpg']);
+% end
+% %%
+% parfor i = 1:size(ds, 1)
+%    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+%    
+%    sharpened = imsharpen(im, 'Threshold', 0.7);
+%    
+%    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpThreshold/' images{i} '.jpg']);
+% end
+% 
+% %%
+% parfor i = 1:size(ds, 1)
+%    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+%    
+%    mask = padarray(2,[2 2]) - fspecial('gaussian' ,[5 5],2);
+%    sharpened = imfilter(im, mask);
+%    
+%    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpGauss/' images{i} '.jpg']);
+% end
+% %%
+% parfor i = 1:size(ds, 1)
+%     im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+%    
+%     mask = fspecial('unsharp', 1);
+%     sharpened = imfilter(im, mask);
+%    
+%    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharp/' images{i} '.jpg']);
+% end
 
 %%
 
