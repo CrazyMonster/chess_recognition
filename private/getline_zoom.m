@@ -1,6 +1,34 @@
-%Tristan Ursell
-%November 2013
-%Active zoom for polyline selection.
+% Copyright (c) 2013, Tristan Ursell
+% Copyright (c) 2012, John D'Errico
+% All rights reserved.
+% 
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+%     * Redistributions of source code must retain the above copyright
+%       notice, this list of conditions and the following disclaimer.
+%     * Redistributions in binary form must reproduce the above copyright
+%       notice, this list of conditions and the following disclaimer in
+%       the documentation and/or other materials provided with the distribution
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+% AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+% IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+% ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+% LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+% SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+% INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+% CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+% POSSIBILITY OF SUCH DAMAGE.
+
+% Tristan Ursell
+% November 2013
+% Active zoom for polyline selection.
+%
+% Source: https://it.mathworks.com/matlabcentral/fileexchange/38959-active-figure-zoom-for-selecting-points
 %
 % [X,Y]=getline_zoom(Im1);
 % [X,Y]=getline_zoom(Im1,'plot');
@@ -160,7 +188,7 @@ while true
     end
     
     %select next point
-    [X_temp,Y_temp,flag0]=ginput(1);
+    [X_temp, Y_temp, ~]=ginput(1);
     
     %set new zoom center
     X0=X_temp+xl-1;
