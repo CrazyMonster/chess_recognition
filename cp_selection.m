@@ -1,19 +1,21 @@
 id = 1;
 ds = load_dataset(id);
 
-images = ds.Image;
+labels = ds.Labels;
 
-control_points = zeros(size(ds, 1), 4, 2);
+points = zeros(size(labels, 1), 4, 2);
 
-for i = 1
-   im = imread_rotate(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
+for i = 1:size(labels, 1)
+   l = labels(i, :);
+   
+   im = imread_rotate(['datasets/' num2str(id) '/images/' char(l.Image) '.jpg']);
    
    for j=1:4
        [x, y] = getline_zoom(im);
        
-       control_points(i, j, :) = [x, y];
+       points(i, j, :) = [x, y];
    end
    
-   save('points', 'control_points');
+   save('points', 'points');
 end
 
