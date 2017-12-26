@@ -1,23 +1,66 @@
-id = 1;
+id = 2;
 ds = load_dataset(id);
 
-images = ds.Image;
+images = ds.Labels.Image;
+points = ds.Labels.FramePoints;
 
-if ~exist('datasets/1/tmp/projected', 'dir')
-    mkdir('datasets/1/tmp/projected');
+if ~exist(['datasets/' num2str(id) '/tmp/cropped/projectedbw'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/cropped/projectedbw']);
+end
+
+if ~exist(['datasets/' num2str(id) '/tmp/cropped/projectedgray'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/cropped/projectedgray']);
+end
+
+
+if ~exist(['datasets/' num2str(id) '/tmp/cropped/projectededge'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/cropped/projectededge']);
 end
 
 %%
-for i = 13
-    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
-    
-    movingPoints = [483 1281; 1899 1365; 435 2811; 1829 2709];
-    fixedPoints = [0 0; 500 0; 0 500; 500 500];
+for i = 1:size(ds.Labels, 1)
+    im = imread(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
+  
+     
+    movingPoints = reshape(points(i, :, :), 4, 2);
+    fixedPoints = [0 0; 1 0; 0 1; 1 1];
     
     % matrice di trasformazione
     tform = fitgeotrans(movingPoints, fixedPoints, 'projective');
     
-    projected = imwarp(im, tform, 'OutputView', imref2d([500, 500]));
+    projected = imwarp(im, tform, 'OutputView', imref2d([512, 512], [0, 1], [0, 1]));
    
-    imwrite(projected, ['datasets/' num2str(id) '/tmp/projected/' images{i} '.jpg']);
+    imwrite(projected, ['datasets/' num2str(id) '/tmp/cropped/projectedbw/' images{i} '.jpg']);
+end
+
+%%
+for i = 1:size(ds.Labels, 1)
+    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+  
+     
+    movingPoints = reshape(points(i, :, :), 4, 2);
+    fixedPoints = [0 0; 1 0; 0 1; 1 1];
+    
+    % matrice di trasformazione
+    tform = fitgeotrans(movingPoints, fixedPoints, 'projective');
+    
+    projected = imwarp(im, tform, 'OutputView', imref2d([512, 512], [0, 1], [0, 1]));
+   
+    imwrite(projected, ['datasets/' num2str(id) '/tmp/cropped/projectedgray/' images{i} '.jpg']);
+end
+
+%%
+for i = 1:size(ds.Labels, 1)
+    im = imread(['datasets/' num2str(id) '/tmp/edge/' images{i} '.jpg']);
+  
+     
+    movingPoints = reshape(points(i, :, :), 4, 2);
+    fixedPoints = [0 0; 1 0; 0 1; 1 1];
+    
+    % matrice di trasformazione
+    tform = fitgeotrans(movingPoints, fixedPoints, 'projective');
+    
+    projected = imwarp(im, tform, 'OutputView', imref2d([512, 512], [0, 1], [0, 1]));
+   
+    imwrite(projected, ['datasets/' num2str(id) '/tmp/cropped/projectededge/' images{i} '.jpg']);
 end
