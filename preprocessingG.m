@@ -1,48 +1,48 @@
-id = 2;
+id = 1;
 ds = load_dataset(id);
 
-images = ds.Image;
+images = ds.Labels.Image;
 
-if ~exist('datasets/2/tmp/gray', 'dir')
-    mkdir('datasets/2/tmp/gray');
+if ~exist(['datasets/' num2str(id) '/tmp/gray'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/gray']);
 end
 
 
-if ~exist('datasets/2/tmp/projected', 'dir')
-    mkdir('datasets/2/tmp/projected');
+if ~exist(['datasets/' num2str(id) '/tmp/projected'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/projected']);
 end
 
-if ~exist('datasets/2/tmp/bw80', 'dir')
-    mkdir('datasets/2/tmp/bw80');
+if ~exist(['datasets/' num2str(id) '/tmp/bw80'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/bw80']);
 end
 
-if ~exist('datasets/2/tmp/edge', 'dir')
-    mkdir('datasets/2/tmp/edge');
+if ~exist(['datasets/' num2str(id) '/tmp/edge'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/edge']);
 end
 
-if ~exist('datasets/2/tmp/sharpRadius', 'dir')
-    mkdir('datasets/2/tmp/sharpRadius');
+if ~exist(['datasets/' num2str(id) '/tmp/sharpRadius'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/sharpRadius']);
 end
 
-% if ~exist('datasets/2/tmp/sharpAmount', 'dir')
-%     mkdir('datasets/2/tmp/sharpAmount');
+% if ~exist(['datasets/' num2str(id) '/tmp/sharpAmount'], 'dir')
+%     mkdir(['datasets/2/tmp/sharpAmount']);
 % end
 % 
-% if ~exist('datasets/2/tmp/sharpThreshold', 'dir')
-%     mkdir('datasets/2/tmp/sharpThreshold');
+% if ~exist(['datasets/' num2str(id) '/tmp/sharpThreshold'], 'dir')
+%     mkdir(['datasets/2/tmp/sharpThreshold']);
 % end
 % 
-% if ~exist('datasets/2/tmp/sharpGauss', 'dir')
-%     mkdir('datasets/2/tmp/sharpGauss');
+% if ~exist(['datasets/' num2str(id) '/tmp/sharpGauss'], 'dir')
+%     mkdir(['datasets/' num2str(id) '/tmp/sharpGauss']);
 % end
 % 
-% if ~exist('datasets/2/tmp/sharp', 'dir')
-%     mkdir('datasets/2/tmp/sharp');
+% if ~exist(['datasets/' num2str(id) '/tmp/sharp'], 'dir')
+%     mkdir(['datasets/' num2str(id) '/tmp/sharp']);
 % end
 
 %%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
+parfor i = 1:size(ds.Labels, 1)
+   im = imread_rotate(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
    
    gray = rgb2gray(im);
    
@@ -50,7 +50,7 @@ parfor i = 1:size(ds, 1)
 end
 
 %%
-% parfor i = 1:size(ds, 1)
+% parfor i = 1:size(ds.Labels, 1)
 %    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
 %    
 %    sharpened = imsharpen(im);
@@ -58,15 +58,15 @@ end
 %    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpened/' images{i} '.jpg']);
 % end
 %%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+parfor i = 1:size(ds.Labels, 1)
+   im = imread_rotate(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
    
    sharpened = imsharpen(im, 'Radius', 25);
    
    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
 end
 %%
-% parfor i = 1:size(ds, 1)
+% parfor i = 1:size(ds.Labels, 1)
 %    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
 %    
 %    sharpened = imsharpen(im, 'Amount', 2);
@@ -74,7 +74,7 @@ end
 %    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpAmount/' images{i} '.jpg']);
 % end
 % %%
-% parfor i = 1:size(ds, 1)
+% parfor i = 1:size(ds.Labels, 1)
 %    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
 %    
 %    sharpened = imsharpen(im, 'Threshold', 0.7);
@@ -83,7 +83,7 @@ end
 % end
 % 
 % %%
-% parfor i = 1:size(ds, 1)
+% parfor i = 1:size(ds.Labels, 1)
 %    im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
 %    
 %    mask = padarray(2,[2 2]) - fspecial('gaussian' ,[5 5],2);
@@ -92,7 +92,7 @@ end
 %    imwrite(sharpened, ['datasets/' num2str(id) '/tmp/sharpGauss/' images{i} '.jpg']);
 % end
 % %%
-% parfor i = 1:size(ds, 1)
+% parfor i = 1:size(ds.Labels, 1)
 %     im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
 %    
 %     mask = fspecial('unsharp', 1);
@@ -103,8 +103,8 @@ end
 
 %%
 
-for i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
+for i = 1:size(ds.Labels, 1)
+   im = imread_rotate(['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
    
    bw = sauvola(im, [80,80]);
    
@@ -112,8 +112,8 @@ for i = 1:size(ds, 1)
 end
 
 %%
-parfor i = 1:size(ds, 1)
-   im = imread(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
+parfor i =  1:size(ds.Labels, 1)
+   im = imread_rotate(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
    
    edges = edge(im, 'Prewitt', 0.1);
    
