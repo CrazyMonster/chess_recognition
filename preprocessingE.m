@@ -126,3 +126,22 @@ parfor i = 1:size(ds.Labels, 1)
    
    imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.png']);
 end
+
+%% Area Opening
+
+min_area = 80;
+
+input_dir = 'tmp/edges';
+output_dir = 'tmp/area_opened';
+
+if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
+    mkdir(['datasets/' num2str(id) '/' output_dir]);
+end
+
+parfor i = 1:size(ds.Labels, 1)
+   in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.png']);
+   
+   out = bwareaopen(in, min_area);
+   
+   imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.png']);
+end
