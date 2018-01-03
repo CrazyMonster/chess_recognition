@@ -15,11 +15,15 @@ if ~exist(['datasets/' num2str(id) '/tmp/hough_lines'], 'dir')
     mkdir(['datasets/' num2str(id) '/tmp/hough_lines']);
 end
 
+if ~exist(['datasets/' num2str(id) '/tmp/hough_peaks'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/hough_peaks']);
+end
+
 parfor i = 1:size(images, 1)
-    im = imread(['datasets/' num2str(id) '/tmp/edges/' images{i} '.png']);
+    im = imread(['datasets/' num2str(id) '/tmp/area_opened/' images{i} '.png']);
     
     [H, T, R] = hough(im);
-    P = houghpeaks(H, 50, 'Threshold', ceil(0.5*max(H(:))), 'NHoodSize', [5 5]);
+    P = houghpeaks(H, 50, 'Threshold', ceil(0.5*max(H(:))), 'NHoodSize', [5 51]);
     lines = houghlines(im,T,R,P,'FillGap',10,'MinLength',50);
     
     f1 = figure(1);
@@ -28,7 +32,7 @@ parfor i = 1:size(images, 1)
     axis on, axis normal, hold on;
 
     x = T(P(:,2)); y = R(P(:,1));
-    plot(x,y,'s','color','red');
+    plot(x,y,'s','Color','red');
 
     hold off;
     
@@ -59,24 +63,53 @@ parfor i = 1:size(images, 1)
     
     saveas(f2, ['datasets/' num2str(id) '/tmp/hough_segments/' images{i} '.jpg']);
     
+    plot_lines(id, [images{i} '.1'], im, T, R, P);
+    
+    a = zeros(size(H));
+    
+    for k = 1:size(P, 1)
+        a(P(k, 1), P(k, 2)) = 1;
+    end
+    
+    imwrite(a, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.1.png']);
+    
+    f = ones(20, 1);
+    b_ = imfilter(a, f);
+    b = b_ .* a >= 2;
+    
+    imwrite(rescale(b_), ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.2.png']);
+    imwrite(b, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.3.png']);
+    
+    [r, c] = find(b);
+    P_ = [r, c];
+    
+    plot_lines(id, [images{i} '.2'], im, T, R, P_);
+end
+
+function plot_lines(id, name, im, T, R, P)
     f3 = figure(3);
     imshow(im);
     xlabel('x'), ylabel('y');
-    axis on, axis normal, hold on;
+    axis on, axis image, axis manual;
+    hold on;
     
     rho = R(P(:,1));
     theta = T(P(:,2));
     
     theta = deg2rad(theta);
     
+    colors = hsv(size(P, 1));
+    
+    title(['Rette trovate: ' num2str(numel(rho))]);
+    
     for j = 1:numel(rho)
         x = 1:size(im, 2);
         y = (rho(j) - x * cos(theta(j))) / sin(theta(j));
         
-        plot(x, y, 'Color', 'red');
+        plot(x, y, 'LineWidth', 2, 'Color', colors(j, :));
     end
     
     hold off;
     
-    saveas(f3, ['datasets/' num2str(id) '/tmp/hough_lines/' images{i} '.jpg']);
+    saveas(f3, ['datasets/' num2str(id) '/tmp/hough_lines/' name '.jpg']);
 end
