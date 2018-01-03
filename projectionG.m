@@ -18,11 +18,11 @@ if ~exist(['datasets/' num2str(id) '/tmp/cropped/projectededge'], 'dir')
 end
 
 %%
-for i = 1:size(ds.Labels, 1)
+parfor i = 1:size(ds.Labels, 1)
     im = imread(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
   
      
-    movingPoints = reshape(points(i, :, :), 4, 2);
+    movingPoints = squeeze(points(i, :, :));
     fixedPoints = [0 0; 1 0; 0 1; 1 1];
     
     % matrice di trasformazione
@@ -34,11 +34,11 @@ for i = 1:size(ds.Labels, 1)
 end
 
 %%
-for i = 1:size(ds.Labels, 1)
+parfor i = 1:size(ds.Labels, 1)
     im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
   
      
-    movingPoints = reshape(points(i, :, :), 4, 2);
+    movingPoints = squeeze(points(i, :, :));
     fixedPoints = [0 0; 1 0; 0 1; 1 1];
     
     % matrice di trasformazione
@@ -50,11 +50,11 @@ for i = 1:size(ds.Labels, 1)
 end
 
 %%
-for i = 1:size(ds.Labels, 1)
+parfor i = 1:size(ds.Labels, 1)
     im = imread(['datasets/' num2str(id) '/tmp/edge/' images{i} '.jpg']);
   
      
-    movingPoints = reshape(points(i, :, :), 4, 2);
+    movingPoints = squeeze(points(i, :, :));
     fixedPoints = [0 0; 1 0; 0 1; 1 1];
     
     % matrice di trasformazione
