@@ -22,9 +22,12 @@ end
 parfor i = 1:size(images, 1)
     im = imread(['datasets/' num2str(id) '/tmp/area_opened/' images{i} '.png']);
     
+    threshold = ceil(0.3*max(H(:)));
+    nhood_size = [9 51];
+    
     [H, T, R] = hough(im);
-    P = houghpeaks(H, 50, 'Threshold', ceil(0.5*max(H(:))), 'NHoodSize', [5 51]);
-    lines = houghlines(im,T,R,P,'FillGap',10,'MinLength',50);
+    P = houghpeaks(H, 50, 'Threshold', threshold, 'NHoodSize', nhood_size);
+    lines = houghlines(im, T, R, P, 'FillGap', 20, 'MinLength', 100);
     
     f1 = figure(1);
     imshow(imadjust(rescale(H)),'XData',T,'YData',R, 'InitialMagnification','fit');
@@ -73,7 +76,7 @@ parfor i = 1:size(images, 1)
     
     imwrite(a, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.1.png']);
     
-    f = ones(20, 1);
+    f = ones(40, 1);
     b_ = imfilter(a, f);
     b = b_ .* a >= 2;
     

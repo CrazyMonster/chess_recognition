@@ -22,8 +22,8 @@ end
 
 %% Downscale
 
-% La dimensione desiderata lungo l'asse PIÙ LUNGO dell'immagine di input.
-n = 1024;
+% La dimensione desiderata lungo l'asse PIU' LUNGO dell'immagine di input.
+n = 2048;
 
 input_dir = 'tmp/gray';
 output_dir = ['tmp/gray_' num2str(n)];
@@ -51,7 +51,7 @@ end
 sizes = 1:10;
 se = arrayfun(@(i) strel('square', i), sizes);
 
-input_dir = 'tmp/gray_1024';
+input_dir = 'tmp/gray_2048';
 output_dir = 'tmp/closed_tests';
 
 if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
@@ -74,9 +74,9 @@ end
 
 %% Morphological Closing
 
-se = strel('square', 2);
+se = strel('square', 3);
 
-input_dir = 'tmp/gray_1024';
+input_dir = 'tmp/gray_2048';
 output_dir = 'tmp/closed';
 
 if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
@@ -93,7 +93,7 @@ end
 
 %% Smoothing
 
-sigma = 2.0;
+sigma = 2.5;
 
 input_dir = 'tmp/closed';
 output_dir = 'tmp/smooth';
@@ -129,7 +129,7 @@ end
 
 %% Area Opening
 
-min_area = 80;
+min_area = 180;
 
 input_dir = 'tmp/edges';
 output_dir = 'tmp/area_opened';
