@@ -10,7 +10,7 @@ end
 parfor i = 1:size(labels, 1)
     l = labels(i, :);
     
-    im = imread_rotate(['datasets/' num2str(id) '/images/' char(l.Image) '.jpg']);
+    im = lib.imread_rotate(['datasets/' num2str(id) '/images/' char(l.Image) '.jpg']);
     fp = reshape(l.FramePoints, 4, 2);
     
     f1 = figure(1);

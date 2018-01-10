@@ -15,7 +15,7 @@ if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
 end
 
 parfor i = 1:size(ds.Labels, 1)
-   in = imread_rotate(['datasets/' num2str(id) '/' input_dir '/' images{i} '.jpg']);
+   in = lib.imread_rotate(['datasets/' num2str(id) '/' input_dir '/' images{i} '.jpg']);
    hsv = rgb2hsv(in);
    
    out = ((1.0 - hsv(:, :, 2)) .^ gamma) .* hsv(:, :, 3);
@@ -110,7 +110,7 @@ end
 parfor i = 1:size(ds.Labels, 1)
    in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.jpg']);
    
-   out = sauvola(im, window);
+   out = lib.sauvola(im, window);
     
    imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.jpg']);
 end
