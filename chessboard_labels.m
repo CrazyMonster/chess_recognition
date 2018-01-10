@@ -22,17 +22,17 @@ for i = 1:size(labels, 1)
         for k = 1:8
             
             im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/' num2str(j) 'x' num2str(k) '.jpg']);
-            features(counter, :) = compute_mean_stdev(im);
-            lbp = [lbp; compute_lbp(im)];
-            glcm = [glcm; compute_glcm(im)];
-            ghist = [ghist; compute_ghist(im)];
+            features(counter, :) = classification.compute_mean_stdev(im);
+            lbp = [lbp; classification.compute_lbp(im)];
+            glcm = [glcm; classification.compute_glcm(im)];
+            ghist = [ghist; classification.compute_ghist(im)];
             vector(counter) =  board(j, k);
-            
+
             counter = counter + 1;
         end
     end
 end
-
+%%
 % addestramento solo sulle celle non vuote
 
 non_empty = (vector ~= '*');
@@ -143,12 +143,12 @@ cm_test_8 = confmat(test.labels, predicted_test);
 %% 
 % training 3 ghist
 
-classifier_bayes_ghist = fitcnb(train.ghist, train.labels);
-predicted_train = predict(classifier_bayes_ghist, train.ghist);
-cm_train_9 = confmat(train.labels, predicted_train);
-
-predicted_test = predict(classifier_bayes_ghist, test.ghist);
-cm_test_9 = confmat(test.labels, predicted_test);
+% classifier_bayes_ghist = fitcnb(train.ghist, train.labels);
+% predicted_train = predict(classifier_bayes_ghist, train.ghist);
+% cm_train_9 = confmat(train.labels, predicted_train);
+% 
+% predicted_test = predict(classifier_bayes_ghist, test.ghist);
+% cm_test_9 = confmat(test.labels, predicted_test);
 %%
 % training 1 glcm
 
@@ -171,10 +171,10 @@ cm_test_11 = confmat(test.labels, predicted_test);
 
 %% 
 % training 3 glcm
-
-classifier_bayes_glcm = fitcnb(train.glcm, train.labels);
-predicted_train = predict(classifier_bayes_glcm, train.glcm);
-cm_train_12 = confmat(train.labels, predicted_train);
-
-predicted_test = predict(classifier_bayes_glcm, test.glcm);
-cm_test_12 = confmat(test.labels, predicted_test);
+% 
+% classifier_bayes_glcm = fitcnb(train.glcm, train.labels);
+% predicted_train = predict(classifier_bayes_glcm, train.glcm);
+% cm_train_12 = confmat(train.labels, predicted_train);
+% 
+% predicted_test = predict(classifier_bayes_glcm, test.glcm);
+% cm_test_12 = confmat(test.labels, predicted_test);
