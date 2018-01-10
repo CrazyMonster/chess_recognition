@@ -30,6 +30,8 @@ parfor i = 1:size(images, 1)
     P = houghpeaks(H, 50, 'Threshold', threshold, 'NHoodSize', nhood_size);
     lines = houghlines(im, T, R, P, 'FillGap', 20, 'MinLength', 100);
     
+    imwrite(rescale(H), ['datasets/' num2str(id) '/tmp/hough/' images{i} '.1.png']);
+    
     f1 = figure(1);
     imshow(imadjust(rescale(H)),'XData',T,'YData',R, 'InitialMagnification','fit');
     xlabel('\theta'), ylabel('\rho');
@@ -40,7 +42,7 @@ parfor i = 1:size(images, 1)
 
     hold off;
     
-    saveas(f1, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.jpg']);
+    saveas(f1, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.3.jpg']);
 
     f2 = figure(2);
     imshow(im), hold on;
@@ -76,6 +78,23 @@ parfor i = 1:size(images, 1)
     end
     
     imwrite(a, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.1.png']);
+    
+    c = repmat(imadjust(rescale(H)), 1, 1, 3);
+    
+    neighborhood = ones(nhood_size);
+    suppression = imfilter(a, neighborhood);
+    
+    red    = (a == 1);
+    yellow = (a == 0) & (suppression >  0) & (H >= threshold);
+    green  = (a == 0) & (suppression >  0) & (H <  threshold);
+    blue   = (a == 0) & (suppression == 0) & (H >= threshold);
+    white  = (a == 0) & (suppression == 0) & (H <  threshold);
+    
+    c(:, :, 1) = c(:, :, 1) .* (red   | yellow | white);
+    c(:, :, 2) = c(:, :, 2) .* (green | yellow | white);
+    c(:, :, 3) = c(:, :, 3) .* (blue  | white);
+    
+    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2.png']);
     
     f = ones(40, 1);
     b_ = imfilter(a, f);
