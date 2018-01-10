@@ -115,7 +115,8 @@ function extract_edges(id)
         in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.png']);
 
         cc = bwconncomp(in);
-        props = regionprops('table', cc, ["Area", "BoundingBox", "Centroid", "ConvexArea", "Eccentricity", "EquivDiameter", "EulerNumber", "Extent", "Extrema", "FilledArea", "MajorAxisLength", "MinorAxisLength", "Orientation", "Perimeter", "Solidity"]);
+        %props = regionprops('table', cc, ["Area", "BoundingBox", "Centroid", "ConvexArea", "Eccentricity", "EquivDiameter", "EulerNumber", "Extent", "Extrema", "FilledArea", "MajorAxisLength", "MinorAxisLength", "Orientation", "Perimeter", "Solidity"]);
+        props = regionprops('table', cc, ["Area", "Eccentricity"]);
         
         labels = labelmatrix(cc);
         
