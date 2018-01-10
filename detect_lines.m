@@ -22,10 +22,11 @@ end
 parfor i = 1:size(images, 1)
     im = imread(['datasets/' num2str(id) '/tmp/area_opened/' images{i} '.png']);
     
+    [H, T, R] = hough(im);
+    
     threshold = ceil(0.3*max(H(:)));
     nhood_size = [9 51];
     
-    [H, T, R] = hough(im);
     P = houghpeaks(H, 50, 'Threshold', threshold, 'NHoodSize', nhood_size);
     lines = houghlines(im, T, R, P, 'FillGap', 20, 'MinLength', 100);
     
