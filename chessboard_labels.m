@@ -21,7 +21,8 @@ for i = 1:size(labels, 1)
     for j = 1:8
         for k = 1:8
             
-            im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/' num2str(j) 'x' num2str(k) '.jpg']);
+            im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'dilated.jpg']);
+            
             features(counter, :) = classification.compute_mean_stdev(im);
             lbp = [lbp; classification.compute_lbp(im)];
             glcm = [glcm; classification.compute_glcm(im)];
