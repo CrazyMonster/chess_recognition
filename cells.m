@@ -12,15 +12,17 @@ parfor i = 1:size(images, 1)
     for j = 1:8
         for l = 1:8
             
-            x = 64 * (j - 1);
-            y = 64 * (l - 1);
+            x = 64 * (j - 1) + 1;
+            y = 64 * (l - 1) + 1;
             
             im = imread(['datasets/' num2str(id) '/tmp_G/cropped/projectedgray/' images{i} '.jpg']);
-            im_cropped = imcrop(im, [x, y, 64, 64]);
+            
+            im_cropped = im(x : x + 63, y : y + 63);
+              
+            %im_cropped = imcrop(im, [x, y, 63.5, 63.5]);
             
             imwrite(im_cropped, ['datasets/' num2str(id) '/tmp_G/cells/' images{i} '/' num2str(j) 'x' num2str(l) '.jpg']);
   
         end 
-    end
-    
+    end 
 end
