@@ -8,9 +8,9 @@ labels = ds.Labels;
 features = zeros(size(labels, 1), 2);
 vector = repmat('*', size(labels, 1), 1);
 
-lbp = []; % Local binary pattern histograms
-glcm = []; % Gray-Level Co-Occurence Matrices
-ghist = []; % Gray-level histograms
+% lbp = []; % Local binary pattern histograms
+% glcm = []; % Gray-Level Co-Occurence Matrices
+% ghist = []; % Gray-level histograms
   
 counter = 1;
 
@@ -21,13 +21,15 @@ for i = 1:size(labels, 1)
     for j = 1:8
         for k = 1:8
             
-            im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'dilated.jpg']);
+            im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
             
-            features(counter, :) = classification.compute_mean_stdev(im);
-            lbp = [lbp; classification.compute_lbp(im)];
-            glcm = [glcm; classification.compute_glcm(im)];
-            ghist = [ghist; classification.compute_ghist(im)];
-            vector(counter) =  board(j, k);
+%            features(counter, :) = classification.compute_(im);
+            
+             features(counter, :) = classification.compute_mean_stdev(im);
+%              lbp = [lbp; classification.compute_lbp(im)];
+%              glcm = [glcm; classification.compute_glcm(im)];
+%              ghist = [ghist; classification.compute_ghist(im)];
+              vector(counter) =  board(j, k);
 
             counter = counter + 1;
         end
@@ -39,6 +41,9 @@ end
 non_empty = (vector ~= '*');
 
 features = features(non_empty);
+% lbp = lbp(non_empty);
+% glcm = glcm(non_empty);
+% ghist = ghist(non_empty);
 vector = vector(non_empty);
 
 % partizionamento del dataset
@@ -49,17 +54,17 @@ cv = cvpartition(vector, 'HoldOut', 0.2);
 train.features = features(cv.training);
 train.labels = vector(cv.training);
 
-train.lbp = lbp(cv.training, :);
-train.ghist = ghist(cv.training, :);
-train.glcm = glcm(cv.training, :);
+% train.lbp = lbp(cv.training, :);
+% train.ghist = ghist(cv.training, :);
+% train.glcm = glcm(cv.training, :);
 
 %
 test.features = features(cv.test);
 test.labels = vector(cv.test);
 
-test.lbp = lbp(cv.test, :);
-test.ghist = ghist(cv.test, :);
-test.glcm = glcm(cv.test, :);
+% test.lbp = lbp(cv.test, :);
+% test.ghist = ghist(cv.test, :);
+% test.glcm = glcm(cv.test, :);
 
 %%
 % training 1 features
