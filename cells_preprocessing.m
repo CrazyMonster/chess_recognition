@@ -15,49 +15,64 @@ for i = 1:size(labels, 1)
                 mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1']);
             end
             
-            
-            if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/2'], 'dir')
-                mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/2']);
-            end
-            
-             if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/3'], 'dir')
-                mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/3']);
-            end
-            
-              if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/4'], 'dir')
-                mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/4']);
-              end
-              
-              if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/5'], 'dir')
-                mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/5']);
-              end
-            
+%             
+%             if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/2'], 'dir')
+%                 mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/2']);
+%             end
+%             
+%              if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/3'], 'dir')
+%                 mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/3']);
+%             end
+%             
+%               if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/4'], 'dir')
+%                 mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/4']);
+%               end
+%               
+%               if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/5'], 'dir')
+%                 mkdir(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/5']);
+%               end
+%             
             line = strel('line', 3, 135);
-            
-            %opened = imopen(im, line);
-            closed = imclose(im, line);
-            %eroded = imerode(im, line);
             dilated = imdilate(im, line);
+            
+            
+            
+    
+            % closed = imclose(im, line);
+            
+            % inutili
+            % eroded = imerode(im, line);
+            % opened = imopen(im, line);
+            
             
             %bw = imbinarize(opened);
             %label = bwlabel(bw);
             
             
-             out1 = lib.sauvola(closed, [15 15]);
+            % out1 = lib.sauvola(closed, [15 15]);
              out2 = lib.sauvola(dilated, [15 15]);
+             
+             mask = ones(64,64);
+            mask(3:61, 3:61) = 0;
+        
+            out2 = out2 | mask;
+            %out2 = medfilt2(out2);
             
             %%imwrite(opened,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'opened.jpg']);
-            imwrite(closed,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'closed.jpg']);
+            %imwrite(closed,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'closed.jpg']);
            % %imwrite(eroded,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'eroded.jpg']);
             imwrite(dilated, ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'dilated.jpg']);
-             imwrite(out1,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out1.jpg']);
+          %   imwrite(out1,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out1.jpg']);
           imwrite(out2,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
          
-          out3 = lib.sauvola(im, [50 50]);
-          out3 = imdilate(out3, line);
+           out3 = lib.sauvola(im, [50 50]);
+           out3 = imdilate(out3, line);
+           
+           out3 = out3 | mask;
+          % out3 = medfilt2(out3);
+
           
-          
-          imwrite(out3,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out3.jpg']);
+           imwrite(out3,  ['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out3.jpg']);
          
             
 %             sphere = strel('sphere', 2);
