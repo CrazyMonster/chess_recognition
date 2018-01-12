@@ -42,7 +42,7 @@ figure; imagesc(T_Q1);
 figure; imagesc(T_Q2);
 %%
 
-files = dir('datasets/1/tmp_G/cells/002/morphological/1/*dilated.jpg');
+files = dir('datasets/1/tmp_G/cells/002/morphological/1/*out2.jpg');
 n = size(files, 1);
 
 t = load_templates();
@@ -70,7 +70,7 @@ for i = 1:n
 end
 
 function t = load_templates()
-    files = dir('templates/images/64/*.png');
+    files = dir('templates/images/64/*.w.png');
     n = size(files, 1);
     
     t = cell(n, 1);
@@ -97,8 +97,8 @@ function out = match(im, t)
         mean = mean2(template);
         std = std2(template);
         
-        norm_im = (im - mean) / std;
-        norm_template = (template - mean) / std;
+        norm_im = (im - mean);
+        norm_template = (template - mean);
         
         filtered = imfilter(norm_im, norm_template);
         
