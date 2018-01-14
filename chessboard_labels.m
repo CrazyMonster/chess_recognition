@@ -38,6 +38,22 @@ features(counter, :) = [classification.compute_mean_stdev(im), double(classifica
         end
     end
 end
+
+featuresA = [features; features2];
+vectorA = [vector; vector2];
+
+GLCM2 = [glcm; glcm2];
+GHIST2 = [ghist; ghist2];
+
+T = table;
+
+T.Features = featuresA;
+T.GHist = GHIST2;
+T.GLCM = GLCM2;
+T.Labels = vectorA;
+
+T2 = T(T.Labels~='*', :);
+
 %%
 % addestramento solo sulle celle non vuote
 
