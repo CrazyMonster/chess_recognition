@@ -1,11 +1,11 @@
-function create_edge_labels(id)
+function create_edge_features(id)
     ds = load_dataset(id);
     images = ds.Labels.Image;
     
     input_dir = 'tmp/regionprops';
-    output_dir = 'tmp/edge_labels';
+    output_dir = 'tmp/edge_features';
 
-    labels = table();
+    features = table();
     
     for i = 1:size(images, 1)
         files = dir(['datasets/' num2str(id) '/' input_dir '/' images{i} '/+*.png']);
@@ -23,13 +23,13 @@ function create_edge_labels(id)
         props.IsROI(:) = false;
         props.IsROI(idx) = true;
         
-        labels = [labels; props];
+        features = [features; props];
     end
     
     if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
         mkdir(['datasets/' num2str(id) '/' output_dir]);
     end
     
-    m = matfile(['datasets/' num2str(id) '/' output_dir '/edge_labels.mat']);
-    m.labels = labels;
+    m = matfile(['datasets/' num2str(id) '/' output_dir '/edge_features.mat']);
+    m.features = features;
 end
