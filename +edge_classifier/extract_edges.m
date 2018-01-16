@@ -70,7 +70,7 @@ function extract_edges(id)
 
     sigma = 2.5;
 
-    input_dir = 'tmp/gray_2048';
+    input_dir = 'tmp/opened';
     output_dir = 'tmp/smooth';
 
     if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
