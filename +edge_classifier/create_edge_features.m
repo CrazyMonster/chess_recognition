@@ -31,6 +31,13 @@ function create_edge_features(id)
         features = [features; props]; %#ok<AGROW>
     end
     
+    if exist(['datasets/' num2str(id) '/tmp/lbp/lbp.mat'], 'file')
+    	m = matfile(['datasets/' num2str(id) '/tmp/lbp/lbp.mat']);
+        props = m.props;
+            
+        features.LBP = props.LBP;
+   	end
+    
     if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
         mkdir(['datasets/' num2str(id) '/' output_dir]);
     end
