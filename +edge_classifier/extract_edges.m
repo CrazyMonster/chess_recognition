@@ -47,8 +47,8 @@ function extract_edges(id)
 
     %% Morphological Opening
 
-    se_h = strel('rectangle', [3 8]);
-    se_v = strel('rectangle', [8 3]);
+    se_h = strel('rectangle', [4 8]);
+    se_v = strel('rectangle', [8 4]);
 
     input_dir = 'tmp/gray_2048';
     output_dir = 'tmp/opened';
@@ -102,9 +102,51 @@ function extract_edges(id)
        imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.png']);
     end
     
+    %% Edge Linking
+
+    max_gap = 1;
+    
+    input_dir = 'tmp/edges';
+    output_dir = 'tmp/edges_linked';
+
+    if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
+        mkdir(['datasets/' num2str(id) '/' output_dir]);
+    end
+
+    parfor i = 1:size(images, 1)
+       in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.png']);
+
+       out = lib.filledgegaps(in, max_gap);
+
+       imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.png']);
+    end
+    
+    %% Edge Filtering
+
+    input_dir = 'tmp/edges_linked';
+    output_dir = 'tmp/edges_filtered';
+
+    if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
+        mkdir(['datasets/' num2str(id) '/' output_dir]);
+    end
+
+    parfor i = 1:size(images, 1)
+        in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.png']);
+
+        cc = bwconncomp(in);
+        props = regionprops('table', cc, ["Area", "Eccentricity"]);
+        
+        labels = labelmatrix(cc);
+
+        idx = find([props.Area] > 900 & [props.Eccentricity] < 0.7);
+        out = ismember(labels, idx);
+        
+        imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '.png']);
+    end
+    
     %% Region Properties
 
-    input_dir = 'tmp/edges';
+    input_dir = 'tmp/edges_filtered';
     output_dir = 'tmp/regionprops';
 
     if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
@@ -116,29 +158,17 @@ function extract_edges(id)
 
         cc = bwconncomp(in);
         props = regionprops('table', cc, ["Area", "BoundingBox", "Centroid", "ConvexArea", "Eccentricity", "EquivDiameter", "EulerNumber", "Extent", "Extrema", "FilledArea", "MajorAxisLength", "MinorAxisLength", "Orientation", "Perimeter", "Solidity"]);
-        props2 = regionprops('table', cc, "SubarrayIdx");
         
         labels = labelmatrix(cc);
-
-        props.Subregions(:) = NaN;
-        
-        idx = find([props.Area] > 900 & [props.Eccentricity] < 0.6);
         
         if ~exist(['datasets/' num2str(id) '/' output_dir '/' images{i}], 'dir')
             mkdir(['datasets/' num2str(id) '/' output_dir '/' images{i}]);
         end
 
-        for j = 1:numel(idx)
-            out = (labels == idx(j));
+        for j = 1:size(props, 1)
+            out = (labels == j);
             
-            imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '/' num2str(idx(j)) '.png']);
-            
-            subidx = props2.SubarrayIdx(idx(j), :);
-            s = labels(subidx{:});
-            
-            subregions = unique(s);
-            
-            props.Subregions(idx(j)) = numel(subregions);
+            imwrite(out, ['datasets/' num2str(id) '/' output_dir '/' images{i} '/' num2str(j) '.png']);
         end
         
         m = matfile(['datasets/' num2str(id) '/' output_dir '/' images{i} '/' 'props.mat']);
