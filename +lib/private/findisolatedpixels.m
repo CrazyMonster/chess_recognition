@@ -29,8 +29,8 @@
 function [r, c] = findisolatedpixels(b)
 
     lut = makelut(@isolated, 3);
-    isolated = applylut(b, lut);
-    [r, c] = find(isolated);
+    is = applylut(b, lut);
+    [r, c] = find(is);
 
 %----------------------------------------------------------------------
 % Function to test whether the centre pixel within a 3x3 neighbourhood is
