@@ -5,7 +5,12 @@ function ds = load_dataset(id)
     puzzles = load_puzzles(ds);
     
     ds.Labels = join(labels, puzzles);
-    ds.Labels.FramePoints = load_frames(ds);
+    
+    fp = load_frames(ds);
+    
+    if ~isempty(fp)
+        ds.Labels.FramePoints = fp;
+    end
 end
 
 function out = path_for_asset(dataset, filename)
@@ -46,5 +51,7 @@ function out = load_frames(dataset)
    if exist(path, 'file')
        fp = load(path);
        out = fp.points;
+   else
+       out = [];
    end
 end
