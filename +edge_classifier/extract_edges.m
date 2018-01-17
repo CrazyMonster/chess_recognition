@@ -174,4 +174,74 @@ function extract_edges(id)
         m = matfile(['datasets/' num2str(id) '/' output_dir '/' images{i} '/' 'props.mat']);
         m.props = props;
     end
+    
+    %% Masked Images
+    
+    images_dir = 'tmp/gray_2048';
+    input_dir = 'tmp/edges_filtered';
+    output_dir = 'tmp/masked';
+
+    if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
+        mkdir(['datasets/' num2str(id) '/' output_dir]);
+    end
+
+    parfor i = 1:size(images, 1)
+        image = imread(['datasets/' num2str(id) '/' images_dir '/' images{i} '.jpg']);
+        in = imread(['datasets/' num2str(id) '/' input_dir '/' images{i} '.png']);
+        
+        im = im2double(image);
+        
+        cc = bwconncomp(in);
+        labels = labelmatrix(cc);
+        
+        n = max(max(labels));
+        
+        if ~exist(['datasets/' num2str(id) '/' output_dir '/' images{i}], 'dir')
+            mkdir(['datasets/' num2str(id) '/' output_dir '/' images{i}]);
+        end
+
+        for j = 1:n
+            region = (labels == j);
+            
+            convex = bwconvhull(region);
+            masked = im .* double(convex);
+            
+            imwrite(masked, ['datasets/' num2str(id) '/' output_dir '/' images{i} '/' num2str(j) '.jpg']);
+        end
+    end
+    
+    %% LBP
+    
+    input_dir = 'tmp/masked';
+    output_dir = 'tmp/lbp';
+
+    if ~exist(['datasets/' num2str(id) '/' output_dir], 'dir')
+        mkdir(['datasets/' num2str(id) '/' output_dir]);
+    end
+
+    all = cell(size(images, 1), 1);
+    
+    parfor i = 1:size(images, 1)
+        files = dir(['datasets/' num2str(id) '/' input_dir '/' images{i} '/*.jpg']);
+        n = size(files, 1);
+        
+        lbp = zeros(n, 59);
+        
+        for j = 1:n
+            im = imread([files(j).folder '/' files(j).name]);
+            
+            lbp(j, :) = classification.compute_lbp(im);
+        end
+        
+        all{i} = table(lbp, 'VariableNames', {'LBP'});
+    end
+    
+    props = table();
+    
+    for i = 1:size(images, 1)
+        props = [props; all{i}]; %#ok<AGROW>
+    end
+    
+    m = matfile(['datasets/' num2str(id) '/' output_dir '/lbp.mat']);
+    m.props = props;
 end
