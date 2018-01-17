@@ -1,5 +1,6 @@
 function ds = load_dataset(id)
-    ds.Path = ["datasets", num2str(id)];
+    ds.Path = ["datasets", id];
+    ds.path_for_asset = @(varargin) path_for_asset(ds, varargin{:});
     
     labels = load_labels(ds);
     puzzles = load_puzzles(ds);
@@ -13,16 +14,17 @@ function ds = load_dataset(id)
     end
 end
 
-function out = path_for_asset(dataset, filename)
+function out = path_for_asset(dataset, filename, type)
     out = join([dataset.Path, filename], "/");
+    out = join([out, type], ".");
     
     % Converti il path in character array, come richiesto da molte funzioni
     % di Matlab.
     out = char(out);
 end
 
-function out = load_labels(dataset)
-    path = path_for_asset(dataset, "labels.csv");
+function out = load_labels(ds)
+    path = ds.path_for_asset("labels", "csv");
 
     opts = detectImportOptions(path);
     
@@ -32,8 +34,8 @@ function out = load_labels(dataset)
     out = readtable(path, opts);
 end
 
-function out = load_puzzles(dataset)
-    path = path_for_asset(dataset, "puzzles.csv");
+function out = load_puzzles(ds)
+    path = ds.path_for_asset("puzzles", "csv");
     
     % Specifica che il file puzzles.csv usa ; come delimitatore, altrimenti
     % gli / contenuti nella notazione FEN confondono detectImportOptions.
@@ -45,8 +47,8 @@ function out = load_puzzles(dataset)
     out = readtable(path, opts);
 end
 
-function out = load_frames(dataset)
-   path = path_for_asset(dataset, "frame_points.mat");
+function out = load_frames(ds)
+   path = ds.path_for_asset("frame_points", "mat");
    
    if exist(path, 'file')
        fp = load(path);
