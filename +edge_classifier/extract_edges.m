@@ -5,41 +5,41 @@ function extract_edges(id)
     for i = 1:size(labels, 1)
         l = labels(i, :);
         
-        in = lib.imread_rotate(['datasets/' num2str(id) '/images/' l.Image{:} '.jpg']);
+        in = lazy(@() lib.imread_rotate(['datasets/' num2str(id) '/images/' l.Image{:} '.jpg']));
         
         % Grayscale
-        gray = cached_fapply(ds, ["gray", l.Image], "jpg", @rgb2gray, in);
+        gray = cached(ds, ["gray", l.Image], "jpg", @rgb2gray, in);
         
         % Downscale
         % La dimensione desiderata lungo l'asse PIU' LUNGO dell'immagine di input.
         n = 2048;
         
-        small = cached_fapply(ds, [['gray_' num2str(n)], l.Image], "jpg", @downscale, gray, n);
+        small = cached(ds, [['gray_' num2str(n)], l.Image], "jpg", @downscale, gray, n);
         
         % Morphological Opening
         se_h = strel('rectangle', [4 8]);
         se_v = strel('rectangle', [8 4]);
         
-        opened = cached_fapply(ds, ["opened", l.Image], "jpg", @opening, small, se_h, se_v);
+        opened = cached(ds, ["opened", l.Image], "jpg", @opening, small, se_h, se_v);
         
         % Smoothing
         sigma = 2.5;
         
-        smooth = cached_fapply(ds, ["smooth", l.Image], "jpg", @imgaussfilt, opened, sigma);
+        smooth = cached(ds, ["smooth", l.Image], "jpg", @imgaussfilt, opened, sigma);
         
         % Edge Detection
-        edges = cached_fapply(ds, ["edges", l.Image], "png", @edge, smooth, 'Canny');
+        edges = cached(ds, ["edges", l.Image], "png", @edge, smooth, 'Canny');
         
         % Edge Linking
         max_gap = 1;
 
-        linked = cached_fapply(ds, ["edges_linked", l.Image], "png", @lib.filledgegaps, edges, max_gap);
+        linked = cached(ds, ["edges_linked", l.Image], "png", @lib.filledgegaps, edges, max_gap);
         
         % Edge Filtering
         props = ["Area", "Eccentricity"];
         condition = @(x) [x.Area] > 900 & [x.Eccentricity] < 0.7;
         
-        filtered = cached_fapply(ds, ["edges_filtered", l.Image], "png", @edge_filter, linked, props, condition);
+        filtered = cached(ds, ["edges_filtered", l.Image], "png", @edge_filter, linked, props, condition);
         
         % Region Properties
         props = ["Area", "BoundingBox", "Centroid", "ConvexArea", ...
@@ -47,18 +47,19 @@ function extract_edges(id)
                  "Extent", "Extrema", "FilledArea", "MajorAxisLength",  ...
                  "MinorAxisLength", "Orientation", "Perimeter", "Solidity"];
              
-        regions = cached_fapply(ds, ["regionprops", l.Image], "mat", @region_properties, filtered, props);
+        regions = cached(ds, ["regionprops", l.Image], "mat", @region_properties, filtered, props);
+        regions = lazy.unwrap(regions);
         
         % Regions
         for j = 1:size(regions.props, 1)
             % Region contours
-            region = cached_fapply(ds, ["regions", l.Image, j], "png", @(r, j) r.labels == j, regions, j);
+            region = cached(ds, ["regions", l.Image, j], "png", @(r, j) r.labels == j, regions, j);
             
             % Region mask
-            masked = cached_fapply(ds, ["masked", l.Image, j], "jpg", @convex_mask, small, region);
+            masked = cached(ds, ["masked", l.Image, j], "jpg", @convex_mask, small, region);
             
             % LBP
-            lbp = cached_fapply(ds, ["lbp", l.Image, j], "mat", @classification.compute_lbp, masked);
+            lbp = cached(ds, ["lbp", l.Image, j], "mat", @classification.compute_lbp, masked);
         end
     end
 end

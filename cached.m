@@ -1,6 +1,5 @@
-function out = cached_fapply(ds, id, type, func, varargin)
+function L = cached(ds, id, type, fn, varargin)
     output_path = ds.path_for_asset(["tmp", id], type);
-    output_dir = fileparts(output_path);
     
     if ischar(type) || isstring(type)
         switch type
@@ -14,18 +13,31 @@ function out = cached_fapply(ds, id, type, func, varargin)
                 error('cached_fapply non è in grado di gestire il tipo richiesto.');
         end
     end
-        
-    if exist(output_path, 'file')
-        out = type.load(output_path);
-    else
-        out = func(varargin{:});
-        
+    
+    if ~exist(output_path, 'file')
+        % Risolvi eventuali argomenti lazy.
+        varargin = cellfun(@lazy.unwrap, varargin, 'UniformOutput', false);
+
+        result = fn(varargin{:});
+
         % Crea la directory di output se necessario, sopprimendo il
         % messaggio di avviso se questa esiste già.
+        output_dir = fileparts(output_path);
+
         [~, ~] = mkdir(output_dir);
-        
-        type.save(out, output_path);
+
+        type.save(result, output_path);
     end
+        
+    function out = execute()
+        if exist('result', 'var')
+            out = result;
+        else
+            out = type.load(output_path);
+        end
+    end
+
+    L = lazy(@execute);
 end
 
 function t = image_type()
