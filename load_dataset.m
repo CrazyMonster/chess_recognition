@@ -1,6 +1,6 @@
 function ds = load_dataset(id)
     ds.Path = ["datasets", id];
-    ds.path_for_asset = @(varargin) path_for_asset(ds, varargin{:});
+    ds.path_for_asset = @(varargin) path_for_asset(ds.Path, varargin{:});
     
     labels = load_labels(ds);
     puzzles = load_puzzles(ds);
@@ -12,15 +12,6 @@ function ds = load_dataset(id)
     if ~isempty(fp)
         ds.Labels.FramePoints = fp;
     end
-end
-
-function out = path_for_asset(dataset, filename, type)
-    out = join([dataset.Path, filename], "/");
-    out = join([out, type], ".");
-    
-    % Converti il path in character array, come richiesto da molte funzioni
-    % di Matlab.
-    out = char(out);
 end
 
 function out = load_labels(ds)
