@@ -1,19 +1,23 @@
 function extract_edges(id)
     ds = load_dataset(id);
+    
     labels = ds.Labels;
     
-    c = cached(ds.path_for_asset("tmp", "dir"));
+    path_for_asset = ds.path_for_asset;
+    cache = create_cache(ds.path_for_asset("tmp", "dir"));
     
     % Disattiva la cache, per risparmiare il tempo necessario a salvare i
-    % vari passi. Sintassi work in progress.
+    % vari passi.
     % cache = cached(false);
     
     parfor i = 1:size(labels, 1)
         l = labels(i, :);
         
-        cache = c;
+        % Segnala a MATLAB che queste sono intenzionalmente variabili broadcast. 
+        [~] = path_for_asset;
+        [~] = cache;
         
-        in = lazy(@() lib.imread_rotate(['datasets/' num2str(id) '/images/' l.Image{:} '.jpg']));
+        in = lazy(@() lib.imread_rotate(path_for_asset(["images", l.Image], "jpg")));
         
         % Grayscale
         gray = cache(["gray", l.Image], "jpg", @rgb2gray, in);
@@ -58,8 +62,11 @@ function extract_edges(id)
         regions = cache(["regionprops", l.Image], "mat", @region_properties, filtered, props);
         regions = lazy.unwrap(regions);
         
+        n = size(regions.props, 1);
+        lbp = cell(n, 1);
+        
         % Regions
-        for j = 1:size(regions.props, 1)
+        for j = 1:n
             % Region contours
             region = cache(["regions", l.Image, j], "png", @(r, j) r.labels == j, regions, j);
             
@@ -67,8 +74,10 @@ function extract_edges(id)
             masked = cache(["masked", l.Image, j], "jpg", @convex_mask, small, region);
             
             % LBP
-            lbp = cache(["lbp", l.Image, j], "mat", @classification.compute_lbp, masked);
+            lbp{j} = lazy(@(im) classification.compute_lbp(im), masked);
         end
+        
+        lbp = cache(["lbp", l.Image], "mat", @lbp_table, lbp);
     end
 end
 
@@ -114,4 +123,8 @@ function out = convex_mask(im, region)
     convex = bwconvhull(region);
     
     out = im .* double(convex);
+end
+
+function out = lbp_table(lbp)
+    out = table(cell2mat(lbp), 'VariableNames', {'LBP'});
 end

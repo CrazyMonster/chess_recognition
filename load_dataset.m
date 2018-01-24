@@ -1,6 +1,5 @@
 function ds = load_dataset(id)
-    ds.Path = ["datasets", id];
-    ds.path_for_asset = @(varargin) path_for_asset(ds.Path, varargin{:});
+    ds.path_for_asset = @(varargin) path_for_asset(["datasets", id], varargin{:});
     
     labels = load_labels(ds);
     puzzles = load_puzzles(ds);
