@@ -119,10 +119,10 @@ function out = region_properties(in, properties)
 end
 
 function out = convex_mask(im, region)
-    im = im2double(im);
     convex = bwconvhull(region);
     
-    out = im .* double(convex);
+    out = im;
+    out(~convex) = 0;
 end
 
 function out = lbp_table(lbp)
