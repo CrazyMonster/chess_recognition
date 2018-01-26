@@ -51,7 +51,7 @@ end
 
 %%
 parfor i = 1:size(ds.Labels, 1)
-    im = imread(['datasets/' num2str(id) '/tmp/edge/' images{i} '.jpg']);
+    im = imread(['datasets/' num2str(id) '/tmp/edge/' images{i} '.png']);
   
      
     movingPoints = squeeze(points(i, :, :));
