@@ -1,14 +1,23 @@
-function ds = create_training_dataset(ids)
+function ds = create_training_dataset(ids, with_roi)
+    if ~exist('with_roi', 'var')
+        with_roi = true;
+    end
+
     dataset = table;
     
     for i = ids
         f = edge_classifier.extract_dataset_features(i);
-        r = edge_classifier.load_roi_labels(i);
         
-        assert(size(f, 1) == size(r, 1), "Le regioni di interesse non sono state etichettate correttamente.");
+        if with_roi
+            r = edge_classifier.load_roi_labels(i);
         
-        ds = join(f, r);
+            assert(size(f, 1) == size(r, 1), "Le regioni di interesse non sono state etichettate correttamente.");
         
+            ds = join(f, r);
+        else
+            ds = f;
+        end
+            
         % Il numero di righe aggiunte varia a seconda dell'immagine, non
         % è possibile preallocare l'array. Il commento sotto disattiva il 
         % warning di MATLAB.
@@ -25,7 +34,9 @@ function ds = create_training_dataset(ids)
     % * -1, la regione A viene prima della regione B
     % *  0, le due regioni sono equivalenti
     % *  1, la regione A viene dopo della regione B
-    comparisons.Order = comparisons.IsROI_A - comparisons.IsROI_B;
+    if with_roi
+        comparisons.Order = comparisons.IsROI_A - comparisons.IsROI_B;
+    end
     
     vars = {'Area', 'MajorAxisLength', 'MinorAxisLength', 'Eccentricity', ...
             'Orientation', 'ConvexArea', 'FilledArea', 'EulerNumber', ...

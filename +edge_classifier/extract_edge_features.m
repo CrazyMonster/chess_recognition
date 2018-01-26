@@ -10,43 +10,42 @@ function out = extract_edge_features(image, cache, id)
     % La dimensione desiderata lungo l'asse PIU' LUNGO dell'immagine di input.
     n = 2048;
 
-    small = cache(["small", id], "jpg", @downscale, image, n);
+    small = cache(["01.small", id], "jpg", @downscale, image, n);
     
     % Grayscale
-    gray = cache(["gray", id], "jpg", @rgb2gray, small);
+    gray = cache(["02.gray", id], "jpg", @rgb2gray, small);
 
     % Morphological Opening
     se_h = strel('rectangle', [4 8]);
     se_v = strel('rectangle', [8 4]);
 
-    opened = cache(["opened", id], "jpg", @opening, gray, se_h, se_v);
+    opened = cache(["03.opened", id], "jpg", @opening, gray, se_h, se_v);
 
     % Smoothing
     sigma = 2.5;
 
-    smooth = cache(["smooth", id], "jpg", @imgaussfilt, opened, sigma);
+    smooth = cache(["04.smooth", id], "jpg", @imgaussfilt, opened, sigma);
 
     % Edge Detection
-    edges = cache(["edges", id], "png", @edge, smooth, 'Canny');
+    edges = cache(["05.edges", id], "png", @edge, smooth, 'Canny');
 
     % Edge Linking
     max_gap = 1;
 
-    linked = cache(["edges_linked", id], "png", @lib.filledgegaps, edges, max_gap);
+    linked = cache(["06.edges_linked", id], "png", @lib.filledgegaps, edges, max_gap);
 
     % Edge Filtering
     props = ["Area", "Eccentricity"];
     condition = @(x) [x.Area] > 900 & [x.Eccentricity] < 0.7;
 
-    filtered = cache(["edges_filtered", id], "png", @edge_filter, linked, props, condition);
+    filtered = cache(["07.edges_filtered", id], "png", @edge_filter, linked, props, condition);
 
     % Region Properties
-    props = ["Area", "BoundingBox", "Centroid", "ConvexArea", ...
-             "Eccentricity", "EquivDiameter", "EulerNumber", ...
-             "Extent", "Extrema", "FilledArea", "MajorAxisLength",  ...
+    props = ["Area", "BoundingBox", "Centroid", "Eccentricity", ...
+             "EquivDiameter", "EulerNumber", "Extent", "MajorAxisLength", ...
              "MinorAxisLength", "Orientation", "Perimeter", "Solidity"];
 
-    regions = cache(["regionprops", id], "mat", @region_properties, filtered, props);
+    regions = cache(["08.regionprops", id], "mat", @region_properties, filtered, props);
     regions = lazy.unwrap(regions);
 
     n = size(regions.props, 1);
@@ -55,16 +54,16 @@ function out = extract_edge_features(image, cache, id)
     % Regions
     for j = 1:n
         % Region contours
-        region = cache(["regions", id, j], "png", @(r, j) r.labels == j, regions, j);
+        region = cache(["09.regions", id, j], "png", @(r, j) r.labels == j, regions, j);
 
         % Region mask
-        masked = cache(["masked", id, j], "jpg", @convex_mask, gray, region);
+        masked = cache(["10.masked", id, j], "jpg", @convex_mask, gray, region);
 
         % LBP
         lbp{j} = lazy(@(im) classification.compute_lbp(im), masked);
     end
 
-    out = cache(["edge_features", id], "mat", @aggregate_features, regions, lbp);
+    out = cache(["11.edge_features", id], "mat", @aggregate_features, regions, lbp);
     out = lazy.unwrap(out);
 end
 

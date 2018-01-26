@@ -8,6 +8,10 @@ function out = load_roi_labels(id)
     for i = 1:size(labels, 1)
         l = labels(i, :);
         
+        if ~exist(ds.path_for_asset(["frames", l.Image], "dir"), "dir")
+            error("Etichette delle regioni di interesse mancanti.");
+        end
+        
         files = dir(ds.path_for_asset(["frames", l.Image, "*"], "png"));
         n = size(files, 1);
         
