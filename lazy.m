@@ -33,6 +33,10 @@ classdef (Sealed) lazy < handle
                 
                 L.Result = L.Fn(args{:});
                 L.Triggered = true;
+                
+                % Libera la memoria occupata dal function handle e dagli argomenti.
+                L.Fn = [];
+                L.Args = [];
             end
             
             out = L.Result;
