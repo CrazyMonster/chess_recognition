@@ -1,16 +1,16 @@
-id = 1;
+id = 3;
 ds = load_dataset(id);
 
 labels = ds.Labels;
 
 % creazione dei dati
 
-features = zeros(size(labels, 1), 61);
-vector = repmat('*', size(labels, 1), 1);
+features2 = zeros(size(labels, 1), 61);
+vector2 = repmat('*', size(labels, 1), 1);
 
-%  lbp = []; % Local binary pattern histograms
-% glcm = []; % Gray-Level Co-Occurence Matrices
-% ghist = []; % Gray-level histograms
+ % lbp = []; % Local binary pattern histograms
+ glcm2 = []; % Gray-Level Co-Occurence Matrices
+ ghist2 = []; % Gray-level histograms
   
 counter = 1;
 
@@ -21,38 +21,44 @@ for i = 1:size(labels, 1)
     for j = 1:8
         for k = 1:8
             
-            im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
-            
+           % im = imread(['datasets/' num2str(id) '/tmp/cells/' char(l.Image) '/' num2str(j) 'x' num2str(k) '.jpg']);
+             im = imread(['datasets/' num2str(id) '/tmp/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
+%           
 %            features(counter, :) = classification.compute_(im);
 %            features(counter, :) = classification.compute_mean_stdev(im);
              
 
-features(counter, :) = [classification.compute_mean_stdev(im), double(classification.compute_lbp(im))];
+features2(counter, :) = [classification.compute_mean_stdev(im), double(classification.compute_lbp(im))];
 %               lbp = [lbp; classification.compute_lbp(im)];
 %               lbp = double(lbp);
-% %              glcm = [glcm; classification.compute_glcm(im)];
-%              ghist = [ghist; classification.compute_ghist(im)];
-              vector(counter) =  board(j, k);
+              glcm2 = [glcm2; classification.compute_glcm(im)];
+              ghist2 = [ghist2; classification.compute_ghist(im)];
+              vector2(counter) =  board(j, k);
 
             counter = counter + 1;
         end
     end
 end
 
-featuresA = [features; features2];
-vectorA = [vector; vector2];
+% featuresA = [features; T.Features];
+% vectorA = [vector; vector2];
+% 
+% GLCM2 = [glcm; glcm2];
+% GHIST2 = [ghist; ghist2];
 
-GLCM2 = [glcm; glcm2];
-GHIST2 = [ghist; ghist2];
+T3 = table;
 
-T = table;
+T3.Features = features2;
+T3.GHist = ghist2;
+T3.GLCM = glcm2;
+T3.Labels = vector2;
 
-T.Features = featuresA;
-T.GHist = GHIST2;
-T.GLCM = GLCM2;
-T.Labels = vectorA;
+T3e = T3(T3.Labels~='*', :);
 
-T2 = T(T.Labels~='*', :);
+T123 = table;
+T123 = [T; T3];
+T123p = [T2; T3e];
+
 
 %%
 % addestramento solo sulle celle non vuote
