@@ -1,4 +1,4 @@
-id = 3;
+id = 1;
 ds = load_dataset(id);
 
 labels = ds.Labels;
@@ -11,6 +11,7 @@ vector2 = repmat('*', size(labels, 1), 1);
  % lbp = []; % Local binary pattern histograms
  glcm2 = []; % Gray-Level Co-Occurence Matrices
  ghist2 = []; % Gray-level histograms
+ HogFts = [];
   
 counter = 1;
 
@@ -22,7 +23,7 @@ for i = 1:size(labels, 1)
         for k = 1:8
             
            % im = imread(['datasets/' num2str(id) '/tmp/cells/' char(l.Image) '/' num2str(j) 'x' num2str(k) '.jpg']);
-             im = imread(['datasets/' num2str(id) '/tmp/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
+             im = imread(['datasets/' num2str(id) '/tmp_G/cells/' char(l.Image) '/morphological/1/' num2str(j) 'x' num2str(k) 'out2.jpg']);
 %           
 %            features(counter, :) = classification.compute_(im);
 %            features(counter, :) = classification.compute_mean_stdev(im);
@@ -33,8 +34,9 @@ features2(counter, :) = [classification.compute_mean_stdev(im), double(classific
 %               lbp = double(lbp);
               glcm2 = [glcm2; classification.compute_glcm(im)];
               ghist2 = [ghist2; classification.compute_ghist(im)];
-              vector2(counter) =  board(j, k);
-
+              vector2(counter) = board(j, k);
+              HogFts(counter, :) = extractHOGFeatures(im);
+%HogFts = [HogFts; extractHOGFeatures(im)];
             counter = counter + 1;
         end
     end
@@ -46,18 +48,20 @@ end
 % GLCM2 = [glcm; glcm2];
 % GHIST2 = [ghist; ghist2];
 
-T3 = table;
+T1 = table;
 
-T3.Features = features2;
-T3.GHist = ghist2;
-T3.GLCM = glcm2;
-T3.Labels = vector2;
+T1.Features = features2;
+T1.GHist = ghist2;
+T1.GLCM = glcm2;
+T1.Labels = vector2;
+T1.HogFts = HogFts;
 
-T3e = T3(T3.Labels~='*', :);
+T1p = T1(T1.Labels~='*', :);
 
 T123 = table;
-T123 = [T; T3];
-T123p = [T2; T3e];
+
+T123 = [T1; T2; T3];
+T123p = [T1p; T2p; T3p];
 
 
 %%
