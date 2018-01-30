@@ -24,12 +24,14 @@ function out = load_roi_labels(id)
             matches = regexp(files(j).name, '^(?<is_roi>\+?)(?<idx>\d+)', 'names');
             
             t.Region(j) = str2double(matches.idx);
-            t.IsROI(j) = isempty(matches.is_roi);
+            t.IsROI(j) = ~isempty(matches.is_roi);
         end
         
-        % Il numero di righe aggiunte varia a seconda dell'immagine, non
-        % è possibile preallocare l'array. Il commento sotto disattiva il 
-        % warning di MATLAB.
-        out = [out; t]; %#ok<AGROW>
+        if ~isempty(t)
+            % Il numero di righe aggiunte varia a seconda dell'immagine, non
+            % è possibile preallocare l'array. Il commento sotto disattiva il 
+            % warning di MATLAB.
+            out = [out; t]; %#ok<AGROW>
+        end
     end
 end

@@ -21,11 +21,12 @@ function out = extract_dataset_features(id)
         
         f.Dataset(:) = id;
         f.Image(:) = l.Image;
+        f.RegionCount(:) = size(f, 1);
         f.Region(:) = 1:size(f, 1);
         
-        % Riordina le colonne in modo che le tre appena aggiunte compaiano
-        % per prime.
-        f = [f(:, end-2:end), f(:, 1:end-3)];
+        % Riordina le colonne in modo che le quattro appena aggiunte 
+        % compaiano per prime.
+        f = [f(:, end-3:end), f(:, 1:end-4)];
         
         features{i} = f;
     end
