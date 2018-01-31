@@ -1,4 +1,4 @@
-id = 1;
+id = 3;
 ds = load_dataset(id);
 
 images = ds.Labels.Image;
@@ -19,6 +19,10 @@ if ~exist(['datasets/' num2str(id) '/tmp/hough_peaks'], 'dir')
     mkdir(['datasets/' num2str(id) '/tmp/hough_peaks']);
 end
 
+if ~exist(['datasets/' num2str(id) '/tmp/projected'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/projected']);
+end
+
 parfor i = 1:size(images, 1)
     filename = ['datasets/' num2str(id) '/tmp/12.predicted/' images{i} '.png'];
     
@@ -27,6 +31,7 @@ parfor i = 1:size(images, 1)
     end
     
     im = imread(filename);
+    im2 = imread(['datasets/' num2str(id) '/tmp/01.small/' images{i} '.jpg']);
     
     [H, T, R] = hough(im);
     
@@ -75,7 +80,7 @@ parfor i = 1:size(images, 1)
     
     saveas(f2, ['datasets/' num2str(id) '/tmp/hough_segments/' images{i} '.jpg']);
     
-    plot_lines(id, [images{i} '.1'], im, T, R, P);
+    plot_lines(id, [images{i} '.1'], im, im2, T, R, P);
     
     a = zeros(size(H));
     
@@ -121,7 +126,7 @@ parfor i = 1:size(images, 1)
 %     plot_lines(id, [images{i} '.2'], im, T, R, P_);
 end
 
-function plot_lines(id, name, im, T, R, P)
+function plot_lines(id, name, im, im2, T, R, P)
     f3 = figure(3);
     imshow(im);
     xlabel('x'), ylabel('y');
@@ -174,8 +179,8 @@ function plot_lines(id, name, im, T, R, P)
     intersections = cross(a, b);
     intersections = intersections(:, 1:2) ./ intersections(:, 3);
     
-    in_bounds = intersections(:,1) >= 0 & intersections(:,1) <= size(im, 1) & ...
-                intersections(:,2) >= 0 & intersections(:,2) <= size(im, 2);
+    in_bounds = intersections(:,1) >= 0 & intersections(:,1) <= size(im, 2) & ...
+                intersections(:,2) >= 0 & intersections(:,2) <= size(im, 1);
     intersections = intersections(in_bounds, :);
     
     for j = 1:size(intersections, 1)
@@ -185,4 +190,16 @@ function plot_lines(id, name, im, T, R, P)
     hold off;
     
     saveas(f3, ['datasets/' num2str(id) '/tmp/hough_lines/' name '.jpg']);
+    
+    assert(size(intersections, 1) == 4);
+    
+    convex = convhull(intersections);
+    
+    movingPoints = intersections(convex(1:4), :);
+    fixedPoints = [0 0; 1 0; 1 1; 0 1];
+    
+    tform = fitgeotrans(movingPoints, fixedPoints, 'projective');
+    projected = imwarp(im2, tform, 'OutputView', imref2d([512, 512], [0, 1], [0, 1]));
+    
+    imwrite(projected, ['datasets/' num2str(id) '/tmp/projected/' name '.jpg']);
 end
