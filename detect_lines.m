@@ -20,14 +20,20 @@ if ~exist(['datasets/' num2str(id) '/tmp/hough_peaks'], 'dir')
 end
 
 parfor i = 1:size(images, 1)
-    im = imread(['datasets/' num2str(id) '/tmp/area_opened/' images{i} '.png']);
+    filename = ['datasets/' num2str(id) '/tmp/12.predicted/' images{i} '.png'];
+    
+    if ~exist(filename, 'file')
+        continue;
+    end
+    
+    im = imread(filename);
     
     [H, T, R] = hough(im);
     
-    threshold = ceil(0.3*max(H(:)));
-    nhood_size = [9 51];
+    threshold = ceil(0.2 * max(H(:)));
+    nhood_size = [151 9];
     
-    P = houghpeaks(H, 50, 'Threshold', threshold, 'NHoodSize', nhood_size);
+    P = houghpeaks(H, 4, 'Threshold', threshold, 'NHoodSize', nhood_size);
     lines = houghlines(im, T, R, P, 'FillGap', 20, 'MinLength', 100);
     
     imwrite(rescale(H), ['datasets/' num2str(id) '/tmp/hough/' images{i} '.1.png']);
@@ -94,19 +100,20 @@ parfor i = 1:size(images, 1)
     c(:, :, 2) = c(:, :, 2) .* (green | yellow | white);
     c(:, :, 3) = c(:, :, 3) .* (blue  | white);
     
-    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2.png']);
     
-    f = ones(40, 1);
-    b_ = imfilter(a, f);
-    b = b_ .* a >= 2;
     
-    imwrite(rescale(b_), ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.2.png']);
-    imwrite(b, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.3.png']);
     
-    [r, c] = find(b);
-    P_ = [r, c];
-    
-    plot_lines(id, [images{i} '.2'], im, T, R, P_);
+%     f = ones(40, 1);
+%     b_ = imfilter(a, f);
+%     b = b_ .* a >= 2;
+%     
+%     imwrite(rescale(b_), ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.2.png']);
+%     imwrite(b, ['datasets/' num2str(id) '/tmp/hough_peaks/' images{i} '.3.png']);
+%     
+%     [r, c] = find(b);
+%     P_ = [r, c];
+%     
+%     plot_lines(id, [images{i} '.2'], im, T, R, P_);
 end
 
 function plot_lines(id, name, im, T, R, P)
