@@ -100,8 +100,13 @@ parfor i = 1:size(images, 1)
     c(:, :, 2) = c(:, :, 2) .* (green | yellow | white);
     c(:, :, 3) = c(:, :, 3) .* (blue  | white);
     
+    labels = strcat('Retta #', num2str((1:size(P, 1))'));
+    positions = [P(:, 2), P(:, 1), repmat(20, size(P, 1), 1)];
     
+    c = insertObjectAnnotation(c, 'circle', positions, cellstr(labels), ...
+                               'LineWidth', 3);
     
+    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2.png']);
     
 %     f = ones(40, 1);
 %     b_ = imfilter(a, f);
@@ -133,10 +138,48 @@ function plot_lines(id, name, im, T, R, P)
     title(['Rette trovate: ' num2str(numel(rho))]);
     
     for j = 1:numel(rho)
-        x = 1:size(im, 2);
-        y = (rho(j) - x * cos(theta(j))) / sin(theta(j));
+        x1 = 1:size(im, 2);
+        y1 = (rho(j) - x1 * cos(theta(j))) / sin(theta(j));
+        
+        y2 = 1:size(im, 1);
+        x2 = (rho(j) - y2 * sin(theta(j))) / cos(theta(j));
+        
+        x = [x1, x2];
+        y = [y1, y2];
         
         plot(x, y, 'LineWidth', 2, 'Color', colors(j, :));
+    end
+    
+    legend(strcat('Retta #', num2str((1:numel(rho))')));
+    
+    % Intersection points
+    n = numel(rho);
+    
+    lines = repmat(1:n, n, 1);
+    l1 = tril(lines, -1);
+    l2 = tril(lines', -1);
+    
+    p1 = P(l1(l1 ~= 0), :);
+    p2 = P(l2(l2 ~= 0), :);
+    
+    r1 = R(p1(:, 1))';
+    t1 = deg2rad(T(p1(:, 2)))';
+    
+    r2 = R(p2(:, 1))';
+    t2 = deg2rad(T(p2(:, 2)))';
+    
+    a = [cos(t1), sin(t1), -r1];
+    b = [cos(t2), sin(t2), -r2];
+    
+    intersections = cross(a, b);
+    intersections = intersections(:, 1:2) ./ intersections(:, 3);
+    
+    in_bounds = intersections(:,1) >= 0 & intersections(:,1) <= size(im, 1) & ...
+                intersections(:,2) >= 0 & intersections(:,2) <= size(im, 2);
+    intersections = intersections(in_bounds, :);
+    
+    for j = 1:size(intersections, 1)
+        plot(intersections(j,1), intersections(j,2), 'x', 'LineWidth', 2, 'Color', 'yellow');
     end
     
     hold off;
