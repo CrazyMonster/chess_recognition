@@ -53,8 +53,14 @@ function predict_relevance(model, dataset, images)
         else
             ok = 'ERR';
         end
-            
+        
         fprintf('Dataset %d Image %s: %d => %d (%d votes) %s\n', image.Dataset, image.Image, image.Region_A, roi, v, ok);
+        
+        if ~exist(['datasets/' num2str(image.Dataset) '/tmp/12.predicted/'], 'dir')
+            mkdir(['datasets/' num2str(image.Dataset) '/tmp/12.predicted/']);
+        end
+        
+        copyfile(['datasets/' num2str(image.Dataset) '/tmp/09.regions/' char(image.Image) '/' num2str(roi) '.png'], ...
+                 ['datasets/' num2str(image.Dataset) '/tmp/12.predicted/' char(image.Image) '.png']);
     end
 end
-    
