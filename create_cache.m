@@ -29,7 +29,8 @@ function C = create_cache(base_path)
 
         % Se la funzione non è ancora stata eseguita.
         if ~exist(output_path, 'file')
-
+            from_cache = false;
+            
             % Esegui la funzione.
             result = execute(fn, varargin{:});
             
@@ -41,13 +42,15 @@ function C = create_cache(base_path)
 
             % Salva il risultato su disco.
             type_handler.save(result, output_path);
+        else
+            from_cache = true;
         end
 
         function out = resolve()
-            if exist('result', 'var')
-                out = result;
-            else
+            if from_cache
                 out = type_handler.load(output_path);
+            else
+                out = result;
             end
         end
 

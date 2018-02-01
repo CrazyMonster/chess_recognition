@@ -1,7 +1,7 @@
 function out = extract_edge_features(image, cache, id)
 
     % Disabilita la cache se non viene fornita dal chiamante.
-    if ~exist('cache', 'var') || ~exist('id', 'var')
+    if nargin < 3
         cache = create_cache(false);
         id = NaN;
     end
