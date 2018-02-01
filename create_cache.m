@@ -14,7 +14,10 @@ function C = create_cache(base_path)
         % disco.
         if ischar(type) || isstring(type)
             switch type
-                case {'jpg', 'png'}
+                case 'jpg'
+                    type_handler = image_type({}, {'Quality', 85});
+                    
+                case 'png'
                     type_handler = image_type();
 
                  case 'mat'
@@ -72,9 +75,14 @@ function C = create_cache(base_path)
     end
 end
     
-function t = image_type()
-    t.load = @(path) imread(path);
-    t.save = @(out, path) imwrite(out, path);
+function t = image_type(readopts, writeopts)
+    if nargin < 2
+        readopts = {};
+        writeopts = {};
+    end
+
+    t.load = @(path) imread(path, readopts{:});
+    t.save = @(out, path) imwrite(out, path, writeopts{:});
 end
 
 function t = mat_type()

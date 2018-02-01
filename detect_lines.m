@@ -24,7 +24,7 @@ if ~exist(['datasets/' num2str(id) '/tmp/projected'], 'dir')
 end
 
 parfor i = 1:size(images, 1)
-    filename = ['datasets/' num2str(id) '/tmp/12.predicted/' images{i} '.png'];
+    filename = ['datasets/' num2str(id) '/tmp/11.predicted/' images{i} '.png'];
     
     if ~exist(filename, 'file')
         continue;

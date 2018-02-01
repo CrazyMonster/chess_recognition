@@ -21,24 +21,22 @@ function out = extract_edge_features(image, cache, id)
 
     opened = cache(["03.opened", id], "jpg", @opening, gray, se_h, se_v);
 
-    % Smoothing
-    sigma = 2.5;
-
-    smooth = cache(["04.smooth", id], "jpg", @imgaussfilt, opened, sigma);
-
     % Edge Detection
-    edges = cache(["05.edges", id], "png", @edge, smooth, 'Canny');
-
+    thresholds = [];         % Automatically choose threshold values.
+    sigma = sqrt(2 + 2.5^2); % Equivalent to two Gaussian filters with sigma sqrt(2) and 2.5.
+    
+    edges = cache(["04.edges", id], "png", @edge, opened, 'Canny', thresholds, sigma);
+    
     % Edge Linking
     max_gap = 1;
 
-    linked = cache(["06.edges_linked", id], "png", @lib.filledgegaps, edges, max_gap);
+    linked = cache(["05.edges_linked", id], "png", @lib.filledgegaps, edges, max_gap);
 
     % Edge Filtering
     props = ["Area", "Eccentricity"];
     condition = @(x) [x.Area] > 900 & [x.Eccentricity] < 0.7;
 
-    filtered = cache(["07.edges_filtered", id], "png", @edge_filter, linked, props, condition);
+    filtered = cache(["06.edges_filtered", id], "png", @edge_filter, linked, props, condition);
 
     % Region Properties
     props = ["Area", "BoundingBox", "Centroid", "ConvexArea", ...
@@ -46,7 +44,7 @@ function out = extract_edge_features(image, cache, id)
              "FilledArea", "MajorAxisLength", "MinorAxisLength", ...
              "Orientation", "Perimeter", "Solidity"];
 
-    regions = cache(["08.regionprops", id], "mat", @region_properties, filtered, props);
+    regions = cache(["07.regionprops", id], "mat", @region_properties, filtered, props);
     regions = lazy.unwrap(regions);
 
     n = size(regions.props, 1);
@@ -55,16 +53,16 @@ function out = extract_edge_features(image, cache, id)
     % Regions
     for j = 1:n
         % Region contours
-        region = cache(["09.regions", id, j], "png", @(r, j) r.labels == j, regions, j);
+        region = cache(["08.regions", id, j], "png", @(r, j) r.labels == j, regions, j);
 
         % Region mask
-        masked = cache(["10.masked", id, j], "jpg", @convex_mask, gray, region);
+        masked = cache(["09.masked", id, j], "jpg", @convex_mask, gray, region);
 
         % LBP
         lbp{j} = lazy(@(im) classification.compute_lbp(im), masked);
     end
 
-    out = cache(["11.edge_features", id], "mat", @aggregate_features, regions, lbp);
+    out = cache(["10.edge_features", id], "mat", @aggregate_features, regions, lbp);
     out = lazy.unwrap(out);
 end
 
