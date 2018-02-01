@@ -9,7 +9,7 @@ function out = load_roi_labels(id)
         l = labels(i, :);
         
         if ~exist(ds.path_for_asset(["frames", l.Image], "dir"), "dir")
-            error("Etichette delle regioni di interesse mancanti.");
+            error("Etichette delle regioni di interesse mancanti per l'immagine %s.", l.Image);
         end
         
         files = dir(ds.path_for_asset(["frames", l.Image, "*"], "png"));
