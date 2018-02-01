@@ -10,6 +10,8 @@ for i = 1:size(labels, 1)
    
    im = lib.imread_rotate(['datasets/' num2str(id) '/images/' char(l.Image) '.jpg']);
    
+   % Ordine dei punti: top-left, top-right, bottom-left, bottom-right
+   
    for j=1:4
        [x, y] = lib.getline_zoom(im);
        
