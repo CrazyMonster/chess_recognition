@@ -16,7 +16,10 @@ function predict_relevance(model, dataset, images)
     disp(array2table(cm.cm_raw, 'VariableNames', plabels, 'RowNames', tlabels));
     
     if ~exist('images', 'var')
-        images = unique(dataset(dataset.IsROI_A == 1, {'Dataset', 'Image', 'Region_A'}));
+        images = unique(dataset(:, {'Dataset', 'Image'}));
+        rois = unique(dataset(dataset.IsROI_A == 1, {'Dataset', 'Image', 'Region_A'}));
+        
+        images = outerjoin(images, rois, 'Type', 'left', 'MergeKeys', true);
     end
     
     for i = 1:height(images)
@@ -56,11 +59,11 @@ function predict_relevance(model, dataset, images)
         
         fprintf('Dataset %d Image %s: %d => %d (%d votes) %s\n', image.Dataset, image.Image, image.Region_A, roi, v, ok);
         
-        if ~exist(['datasets/' num2str(image.Dataset) '/tmp/12.predicted/'], 'dir')
-            mkdir(['datasets/' num2str(image.Dataset) '/tmp/12.predicted/']);
+        if ~exist(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/'], 'dir')
+            mkdir(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/']);
         end
         
-        copyfile(['datasets/' num2str(image.Dataset) '/tmp/09.regions/' char(image.Image) '/' num2str(roi) '.png'], ...
-                 ['datasets/' num2str(image.Dataset) '/tmp/12.predicted/' char(image.Image) '.png']);
+        copyfile(['datasets/' num2str(image.Dataset) '/tmp/08.regions/' char(image.Image) '/' num2str(roi) '.png'], ...
+                 ['datasets/' num2str(image.Dataset) '/tmp/11.predicted/' char(image.Image) '.png']);
     end
 end
