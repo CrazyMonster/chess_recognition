@@ -1,4 +1,4 @@
-function out = load_roi_labels(id)
+function out = load_roi(id)
     ds = load_dataset(id);
     
     labels = ds.Labels;

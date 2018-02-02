@@ -1,4 +1,4 @@
-function predict_relevance(model, dataset, images)
+function evaluate_model(model, dataset, images)
     gt = dataset.Relevance;
     predictions = model.predictFcn(dataset);
     

@@ -1,4 +1,4 @@
-function out = create_training_dataset(ids, with_roi)
+function out = create_dataset(ids, with_roi)
     if ~exist('with_roi', 'var')
         with_roi = true;
     end
@@ -8,10 +8,10 @@ function out = create_training_dataset(ids, with_roi)
     % Genera le feature dei dataset richiesti e aggregale in un'unica
     % tabella. Carica le label delle regioni di interesse.
     for i = ids
-        f = edge_classifier.extract_dataset_features(i);
+        f = edge_classifier.training.extract_features(i);
         
         if with_roi
-            r = edge_classifier.load_roi_labels(i);
+            r = edge_classifier.training.load_roi(i);
         
             assert(height(f) == height(r), "Le regioni di interesse non sono state etichettate correttamente.");
         

@@ -1,4 +1,4 @@
-function out = extract_dataset_features(id)
+function out = extract_features(id)
     ds = load_dataset(id);
     
     labels = ds.Labels;
