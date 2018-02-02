@@ -5,7 +5,7 @@ function out = load_roi_labels(id)
     
     out = table;
     
-    for i = 1:size(labels, 1)
+    for i = 1:height(labels)
         l = labels(i, :);
         
         if ~exist(ds.path_for_asset(["frames", l.Image], "dir"), "dir")
@@ -13,7 +13,7 @@ function out = load_roi_labels(id)
         end
         
         files = dir(ds.path_for_asset(["frames", l.Image, "*"], "png"));
-        n = size(files, 1);
+        n = numel(files);
         
         t = table;
         

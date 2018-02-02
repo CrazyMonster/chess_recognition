@@ -19,16 +19,16 @@ function predict_relevance(model, dataset, images)
         images = unique(dataset(dataset.IsROI_A == 1, {'Dataset', 'Image', 'Region_A'}));
     end
     
-    for i = 1:size(images, 1)
+    for i = 1:height(images)
         image = images(i, :);
         
         [comparisons, idx, ~] = innerjoin(dataset, image(:, {'Dataset', 'Image'}));
         p = predictions(idx,:);
         
         regions = unique(comparisons(:, {'Region_A'}));
-        votes = zeros(1, size(regions, 1));
+        votes = zeros(1, height(regions));
         
-        for j = 1:size(comparisons, 1)
+        for j = 1:height(comparisons)
             c = comparisons(j, :);
             
             a = str2double(p(j, 1));

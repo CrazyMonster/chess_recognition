@@ -13,7 +13,7 @@ function out = create_training_dataset(ids, with_roi)
         if with_roi
             r = edge_classifier.load_roi_labels(i);
         
-            assert(size(f, 1) == size(r, 1), "Le regioni di interesse non sono state etichettate correttamente.");
+            assert(height(f) == height(r), "Le regioni di interesse non sono state etichettate correttamente.");
         
             ds = join(f, r);
         else

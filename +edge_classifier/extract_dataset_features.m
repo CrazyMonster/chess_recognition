@@ -2,7 +2,7 @@ function out = extract_dataset_features(id)
     ds = load_dataset(id);
     
     labels = ds.Labels;
-    n = size(labels, 1);
+    n = height(labels);
     
     path_for_asset = ds.path_for_asset;
     cache = create_cache(ds.path_for_asset("tmp", "dir"));

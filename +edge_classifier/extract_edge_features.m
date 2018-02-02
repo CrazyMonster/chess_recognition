@@ -47,7 +47,7 @@ function out = extract_edge_features(image, cache, id)
     regions = cache(["07.regionprops", id], "mat", @region_properties, filtered, props);
     regions = lazy.unwrap(regions);
 
-    n = size(regions.props, 1);
+    n = height(regions.props);
     lbp = cell(n, 1);
 
     % Regions
