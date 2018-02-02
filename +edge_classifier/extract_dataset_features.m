@@ -12,21 +12,19 @@ function out = extract_dataset_features(id)
     parfor i = 1:n
         l = labels(i, :);
         
-        % Segnala a MATLAB che queste sono intenzionalmente variabili broadcast. 
+        % Segnala a MATLAB che questa è intenzionalmente una variabile broadcast. 
         [~] = path_for_asset;
-        [~] = cache;
         
-        image = lazy(@imread, path_for_asset(["images", l.Image], "jpg"));
+        path = path_for_asset(["images", l.Image], "jpg");
+        image = lazy(@imread, path);
+        
         f = edge_classifier.extract_edge_features(image, cache, l.Image);
         
         f.Dataset(:) = id;
         f.Image(:) = l.Image;
-        f.RegionCount(:) = size(f, 1);
-        f.Region(:) = 1:size(f, 1);
         
-        % Riordina le colonne in modo che le quattro appena aggiunte 
-        % compaiano per prime.
-        f = [f(:, end-3:end), f(:, 1:end-4)];
+        % Riordina le colonne in modo che le due appena aggiunte compaiano per prime.
+        f = [f(:, end-1:end), f(:, 1:end-2)];
         
         features{i} = f;
     end

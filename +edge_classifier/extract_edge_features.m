@@ -112,5 +112,12 @@ end
 
 function out = aggregate_features(regions, lbp)
     out = regions.props;
+    
     out.LBP = cell2mat(lbp);
+    
+    out.RegionCount(:) = height(out);
+    out.Region(:) = 1:height(out);
+    
+    % Riordina le colonne in modo che le due appena aggiunte compaiano per prime.
+    out = [out(:, end-1:end), out(:, 1:end-2)];
 end
