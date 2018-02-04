@@ -3,19 +3,23 @@ ds = load_dataset(id);
 
 images = ds.Labels.Image;
 
+[~, ~] = mkdir(['datasets/' num2str(id) '/tmp_G/eq']);
+
 parfor i = 1:size(images, 1)
+    path = ['datasets/' num2str(id) '/tmp/projected/' images{i} '.1.jpg'];
     
-    if ~exist(['datasets/' num2str(id) '/tmp_G/cells/' images{i}], 'dir')
-        mkdir(['datasets/' num2str(id) '/tmp_G/cells/' images{i}]);
-    end
-    
-    filename = ['datasets/' num2str(id) '/tmp/projected/' images{i} '.1.jpg'];
-            
-    if ~exist(filename, 'file')
+    if ~exist(path, 'file')
         continue
     end
 
-    in = imread(filename);
+    in = imread(path);
+    in = rgb2gray(in);
+    
+    in = adapthisteq(in);
+    
+    imwrite(in, ['datasets/' num2str(id) '/tmp_G/eq/' images{i} '.jpg']);
+    
+    [~, ~] = mkdir(['datasets/' num2str(id) '/tmp_G/cells/' images{i}]);
     
     for j = 1:8
         for l = 1:8

@@ -23,14 +23,18 @@ if ~exist(['datasets/' num2str(id) '/tmp/projected'], 'dir')
     mkdir(['datasets/' num2str(id) '/tmp/projected']);
 end
 
+if ~exist(['datasets/' num2str(id) '/tmp/points'], 'dir')
+    mkdir(['datasets/' num2str(id) '/tmp/points']);
+end
+
 parfor i = 1:size(images, 1)
-    filename = ['datasets/' num2str(id) '/tmp/11.predicted/' images{i} '.png'];
+    path = ['datasets/' num2str(id) '/tmp/11.predicted/' images{i} '.png'];
     
-    if ~exist(filename, 'file')
+    if ~exist(path, 'file')
         continue;
     end
     
-    im = imread(filename);
+    im = imread(path);
     im2 = imread(['datasets/' num2str(id) '/tmp/01.small/' images{i} '.jpg']);
     
     [H, T, R] = hough(im);
@@ -191,7 +195,9 @@ function plot_lines(id, name, im, im2, T, R, P)
     
     saveas(f3, ['datasets/' num2str(id) '/tmp/hough_lines/' name '.jpg']);
     
-    assert(size(intersections, 1) == 4);
+    if size(intersections, 1) ~= 4
+        fprintf('Numero di intersezioni errato per immagine %s', name);
+    end
     
     convex = convhull(intersections);
     
@@ -202,4 +208,6 @@ function plot_lines(id, name, im, im2, T, R, P)
     projected = imwarp(im2, tform, 'OutputView', imref2d([512, 512], [0, 1], [0, 1]));
     
     imwrite(projected, ['datasets/' num2str(id) '/tmp/projected/' name '.jpg']);
+    
+    save(['datasets/' num2str(id) '/tmp/points/' name '.mat'], 'movingPoints');
 end
