@@ -1,13 +1,12 @@
-function out = extract_features(id)
-    ds = load_dataset(id);
-    
+function out = extract_features(ds)
+    id = ds.Id;
     labels = ds.Labels;
-    n = height(labels);
-    
     path_for_asset = ds.path_for_asset;
+    
     cache = create_cache(ds.path_for_asset("tmp", "dir"));
     
-    features = cell(n, 1);
+    n = height(labels);
+    comparisons = cell(n, 1);
     
     parfor i = 1:n
         l = labels(i, :);
@@ -19,17 +18,19 @@ function out = extract_features(id)
         image = lazy(@imread, path);
         
         f = edge_classifier.extract_edge_features(image, cache, l.Image);
+        c = edge_classifier.compare_edge_regions(f);
         
-        f.Dataset(:) = id;
-        f.Image(:) = l.Image;
+        c.Dataset(:) = id;
+        c.Image(:) = l.Image;
+        c.RegionCount(:) = height(f);
         
-        % Riordina le colonne in modo che le due appena aggiunte compaiano per prime.
-        f = [f(:, end-1:end), f(:, 1:end-2)];
+        % Riordina le colonne in modo che le tre appena aggiunte compaiano per prime.
+        c = [c(:, end-2:end), c(:, 1:end-3)];
         
-        features{i} = f;
+        comparisons{i} = c;
     end
     
-    out = concat_tables(features);
+    out = concat_tables(comparisons);
 end
 
 function out = concat_tables(t)

@@ -1,9 +1,7 @@
-function out = load_roi(id)
-    ds = load_dataset(id);
+function out = load_roi(ds)
+    out = table;
     
     labels = ds.Labels;
-    
-    out = table;
     
     for i = 1:height(labels)
         l = labels(i, :);
@@ -17,7 +15,6 @@ function out = load_roi(id)
         
         t = table;
         
-        t.Dataset(1:n) = id;
         t.Image(1:n) = l.Image;
         
         for j = 1:n
