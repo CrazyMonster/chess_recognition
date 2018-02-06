@@ -69,7 +69,7 @@ function C = create_cache(base_path)
 
     function out = execute(fn, varargin)
         % Risolvi eventuali argomenti lazy.
-        varargin = cellfun(@lazy.unwrap, varargin, 'UniformOutput', false);
+        varargin = lazy.gather(varargin);
 
         out = fn(varargin{:});
     end

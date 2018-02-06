@@ -8,11 +8,11 @@ classdef (Sealed) lazy < handle
     end
     
     methods (Static)
-        function out = unwrap(L)
+        function out = gather(L)
             if isa(L, 'lazy')
                 out = L.result();
             elseif iscell(L)
-                out = cellfun(@lazy.unwrap, L, 'UniformOutput', false);
+                out = cellfun(@lazy.gather, L, 'UniformOutput', false);
             else  
                 out = L;
             end
@@ -26,10 +26,12 @@ classdef (Sealed) lazy < handle
             
             L.Triggered = false;
         end
+    end
         
+    methods (Access = private)
         function out = result(L)
             if ~L.Triggered
-                args = lazy.unwrap(L.Args);
+                args = lazy.gather(L.Args);
                 
                 L.Result = L.Fn(args{:});
                 L.Triggered = true;

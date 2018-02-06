@@ -45,7 +45,7 @@ function out = extract_edge_features(image, cache, id)
              "Orientation", "Perimeter", "Solidity"];
 
     regions = cache(["07.regionprops", id], "mat", @region_properties, filtered, props);
-    regions = lazy.unwrap(regions);
+    regions = lazy.gather(regions);
 
     n = height(regions.props);
     lbp = cell(n, 1);
@@ -63,7 +63,7 @@ function out = extract_edge_features(image, cache, id)
     end
 
     out = cache(["10.edge_features", id], "mat", @aggregate_features, regions, lbp);
-    out = lazy.unwrap(out);
+    out = lazy.gather(out);
 end
 
 function out = downscale(in, n)
