@@ -27,9 +27,14 @@
 % May      2013 
 
 function [r, c] = findisolatedpixels(b)
+    persistent lut;
 
-    lut = makelut(@isolated, 3);
-    is = applylut(b, lut);
+    % Set up a look up table to find isolated pixels. 
+    if isempty(lut)
+        lut = makelut(@isolated, 3);
+    end
+    
+    is = bwlookup(b, lut);
     [r, c] = find(is);
 
 %----------------------------------------------------------------------

@@ -45,19 +45,27 @@
 function [rj, cj, re, ce] = findendsjunctions(b, disp)
 
     if nargin == 1
-	disp = 0;
+        disp = 0;
     end
+    
+    persistent lut_j lut_e;
     
     % Set up look up table to find junctions.  To do this we use the function
     % defined at the end of this file to test that the centre pixel within a 3x3
     % neighbourhood is a junction.
-    lut = makelut(@junction, 3);
-    junctions = applylut(b, lut);
+    if isempty(lut_j)
+        lut_j = makelut(@junction, 3);
+    end
+    
+    % Set up a look up table to find endings. 
+    if isempty(lut_e)
+        lut_e = makelut(@ending, 3);
+    end
+    
+    junctions = bwlookup(b, lut_j);
     [rj,cj] = find(junctions);
     
-    % Set up a look up table to find endings.  
-    lut = makelut(@ending, 3);
-    ends = applylut(b, lut);
+    ends = bwlookup(b, lut_e);
     [re,ce] = find(ends);    
 
     if disp    
