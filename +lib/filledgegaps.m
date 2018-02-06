@@ -83,8 +83,9 @@ function bw = filledgegaps(bw, gapsize)
     % less than or equal to the size of the blobs we used to link edges are
     % filled in, the image reinverted and then rethinned.
     
-    L = bwlabel(~bw,4); 
-    stats = regionprops(L, 'Area');
+    CC = bwconncomp(~bw, 4);
+    L = labelmatrix(CC);
+    stats = regionprops(CC, 'Area');
     
     % Get blobs with areas <= pi* (gapsize/2)^2
     ar = cat(1,stats.Area);
