@@ -1,4 +1,4 @@
-function evaluate_model(model, dataset, images)
+function evaluate_model(model, dataset)
     gt = dataset.Relevance;
     predictions = model.predictFcn(dataset);
     
@@ -9,44 +9,40 @@ function evaluate_model(model, dataset, images)
     
     fprintf('<strong>Accuracy:</strong> %.2f%%\n', cm.accuracy * 100);
     fprintf('\n');
-    fprintf('<strong>Confusion Matrix</strong>\n');
+    fprintf('<strong>Confusion Matrix (relative)</strong>\n');
     disp(array2table(cm.cm, 'VariableNames', plabels, 'RowNames', tlabels));
     fprintf('\n');
-    fprintf('<strong>Confusion Matrix (raw)</strong>\n');
+    fprintf('<strong>Confusion Matrix (absolute)</strong>\n');
     disp(array2table(cm.cm_raw, 'VariableNames', plabels, 'RowNames', tlabels));
     
-    if ~exist('images', 'var')
-        images = unique(dataset(:, {'Dataset', 'Image'}));
-        rois = unique(dataset(dataset.IsROI_A == 1, {'Dataset', 'Image', 'Region_A'}));
-        
-        images = outerjoin(images, rois, 'Type', 'left', 'MergeKeys', true);
-    end
+    images = unique(dataset(:, {'Dataset', 'Image', 'RegionCount'}));
+    rois = unique(dataset(dataset.Relevance(:, 1) == '1', {'Dataset', 'Image', 'Region_A'}));
+
+    images = outerjoin(images, rois, 'Type', 'left', 'MergeKeys', true);
     
     for i = 1:height(images)
         image = images(i, :);
         
-        [comparisons, idx, ~] = innerjoin(dataset, image(:, {'Dataset', 'Image'}));
+        [cmp, idx, ~] = innerjoin(dataset, image(:, {'Dataset', 'Image'}));
         p = predictions(idx,:);
         
-        regions = unique(comparisons(:, {'Region_A'}));
-        votes = zeros(1, height(regions));
+        votes = zeros(1, image.RegionCount);
         
-        for j = 1:height(comparisons)
-            c = comparisons(j, :);
+        a = (p(:, 1) == '1');
+        b = (p(:, 2) == '1');
+        
+        a = 2 .* a - 1;
+        b = 2 .* b - 1;
+        
+        is_same = (cmp.Region_A == cmp.Region_B);
+        a(is_same) = a(is_same) ./ 2;
+        b(is_same) = b(is_same) ./ 2;
+        
+        for j = 1:height(cmp)
+            c = cmp(j, :);
             
-            a = str2double(p(j, 1));
-            b = str2double(p(j, 2));
-            
-            a = 2 * a - 1;
-            b = 2 * b - 1;
-            
-            if a == b
-                a = a / 2;
-                b = b / 2;
-            end
-            
-            votes(c.Region_A) = votes(c.Region_A) + a;
-            votes(c.Region_B) = votes(c.Region_B) + b;
+            votes(c.Region_A) = votes(c.Region_A) + a(j);
+            votes(c.Region_B) = votes(c.Region_B) + b(j);
         end
         
         [v, roi] = max(votes);
@@ -57,7 +53,8 @@ function evaluate_model(model, dataset, images)
             ok = 'ERR';
         end
         
-        fprintf('Dataset %d Image %s: %d => %d (%d votes) %s\n', image.Dataset, image.Image, image.Region_A, roi, v, ok);
+        fprintf('Dataset %d Image %s: T%d => P%d (%d votes, %d regions) %s\n', ...
+                image.Dataset, image.Image, image.Region_A, roi, v, image.RegionCount, ok);
         
         if ~exist(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/'], 'dir')
             mkdir(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/']);
