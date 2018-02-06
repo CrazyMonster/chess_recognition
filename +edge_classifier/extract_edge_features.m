@@ -22,8 +22,8 @@ function out = extract_edge_features(image, cache, id)
     opened = cache(["03.opened", id], "jpg", @opening, gray, se_h, se_v);
 
     % Edge Detection
-    thresholds = [];         % Automatically choose threshold values.
-    sigma = sqrt(2 + 2.5^2); % Equivalent to two Gaussian filters with sigma sqrt(2) and 2.5.
+    thresholds = [];         % Scegli automaticamente i valori di threshold.
+    sigma = sqrt(2 + 2.5^2); % Equivalente a due filtri gaussiani di sigma sqrt(2) e 2.5.
     
     edges = cache(["04.edges", id], "png", @edge, opened, 'Canny', thresholds, sigma);
     
