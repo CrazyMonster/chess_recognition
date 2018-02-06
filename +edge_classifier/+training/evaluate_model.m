@@ -26,31 +26,7 @@ function evaluate_model(model, dataset)
         [cmp, idx, ~] = innerjoin(dataset, image(:, {'Dataset', 'Image'}));
         p = predictions(idx,:);
         
-        votes = zeros(1, image.RegionCount);
-        
-        a = (p(:, 1) == '1');
-        b = (p(:, 2) == '1');
-        
-        a = 2 .* a - 1;
-        b = 2 .* b - 1;
-        
-        is_same = (cmp.Region_A == cmp.Region_B);
-        a(is_same) = a(is_same) ./ 2;
-        b(is_same) = b(is_same) ./ 2;
-        
-        for j = 1:height(cmp)
-            c = cmp(j, :);
-            
-            votes(c.Region_A) = votes(c.Region_A) + a(j);
-            votes(c.Region_B) = votes(c.Region_B) + b(j);
-        end
-        
-        [v, roi] = max(votes);
-        
-        % Nessuna regione è stata considerata rilevante dal classificatore.
-        if v <= 0
-            roi = NaN;
-        end
+        [roi, v] = edge_classifier.count_comparison_votes(cmp, p, image.RegionCount);
         
         if image.Region_A == roi || all(isnan([image.Region_A, roi]))
             ok = 'OK';
