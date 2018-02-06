@@ -22,24 +22,12 @@ function out = extract_features(ds)
         
         c.Dataset(:) = id;
         c.Image(:) = l.Image;
-        c.RegionCount(:) = height(f);
         
         % Riordina le colonne in modo che le tre appena aggiunte compaiano per prime.
-        c = [c(:, end-2:end), c(:, 1:end-3)];
+        c = [c(:, end-1:end), c(:, 1:end-2)];
         
         comparisons{i} = c;
     end
     
-    out = concat_tables(comparisons);
-end
-
-function out = concat_tables(t)
-    out = table;
-
-    for i = 1:numel(t)
-        % Il numero di righe aggiunte varia, non è possibile preallocare la
-        % tabella di destinazione. Il commento sotto disattiva il warning 
-        % di MATLAB.
-        out = [out; t{i}]; %#ok<AGROW>
-    end
+    out = vertcat(comparisons{:});
 end

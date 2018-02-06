@@ -8,6 +8,10 @@ function out = compare_edge_regions(features)
     A = features; B = features;
     comparisons = cartprod(A, B);
     
+    % Aggiungi una colonna contenente il numero di regioni presenti
+    % nell'immagine.
+    count = repmat(height(features), height(comparisons), 1);
+    
     % Per una serie di feature, calcola i Delta di tra le due regioni di ogni coppia.
     vars = {'Region', 'Area', 'MajorAxisLength', 'MinorAxisLength', ...
             'Eccentricity', 'Orientation', 'ConvexArea', 'FilledArea', ...
@@ -24,5 +28,7 @@ function out = compare_edge_regions(features)
     end
     
     % Combina le colonne in un'unica tabella.
-    out = [comparisons, table(delta{:}, 'VariableNames', strcat(vars, '_Delta'))];
+    out = [table(count, 'VariableNames', {'RegionCount'}), ...
+           comparisons, ...
+           table(delta{:}, 'VariableNames', strcat(vars, '_Delta'))];
 end
