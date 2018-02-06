@@ -47,7 +47,12 @@ function evaluate_model(model, dataset)
         
         [v, roi] = max(votes);
         
-        if image.Region_A == roi
+        % Nessuna regione è stata considerata rilevante dal classificatore.
+        if v <= 0
+            roi = NaN;
+        end
+        
+        if image.Region_A == roi || all(isnan([image.Region_A, roi]))
             ok = 'OK';
         else
             ok = 'ERR';
@@ -56,6 +61,10 @@ function evaluate_model(model, dataset)
         fprintf('Dataset %d Image %s: T%d => P%d (%d votes, %d regions) %s\n', ...
                 image.Dataset, image.Image, image.Region_A, roi, v, image.RegionCount, ok);
         
+        if isnan(roi)
+           continue; 
+        end
+            
         if ~exist(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/'], 'dir')
             mkdir(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/']);
         end
