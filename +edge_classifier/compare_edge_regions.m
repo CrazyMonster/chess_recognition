@@ -1,6 +1,6 @@
 function out = compare_edge_regions(features)
     
-    % Crea una tabella in cui vengano confrontate tutte le coppie di 
+    % Crea una tabella in cui vengono confrontate tutte le coppie di 
     % regioni di questa immagine. Sfrutta il fatto che RegionCount è uguale
     % per tutte le regioni per implementare il prodotto cartesiano con
     % la funzione innerjoin(...).
