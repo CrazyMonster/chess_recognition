@@ -23,7 +23,7 @@ function out = extract_features(ds)
         c.Dataset(:) = id;
         c.Image(:) = l.Image;
         
-        % Riordina le colonne in modo che le tre appena aggiunte compaiano per prime.
+        % Riordina le colonne in modo che le due appena aggiunte compaiano per prime.
         c = [c(:, end-1:end), c(:, 1:end-2)];
         
         comparisons{i} = c;
