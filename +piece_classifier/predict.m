@@ -10,6 +10,8 @@ function out = predict(image)
     f = piece_classifier.extract_piece_features(image);
     p = classifier.predictFcn(f);
     
+    board = reshape(p, 8, 8);
     
+    out = serialize_fen(board);
 end
 
