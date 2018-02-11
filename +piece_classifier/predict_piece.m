@@ -11,6 +11,7 @@ glcm = zeros(height(labels), 8 , 8, 64);
 projectionX = zeros(height(labels), 8 , 8, 64);
 projectionY = zeros(height(labels), 8 , 8, 64);
 
+% response vector
 vector = repmat('*', height(labels), 8, 8, 1);
 
 parfor i = 1:size(labels, 1)
