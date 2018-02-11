@@ -22,7 +22,10 @@ function evaluate_model(model, dataset)
         image = images(i, :);
         
         [~, idx, ~] = innerjoin(dataset, image);
+        g = gt(idx, :);
         p = predictions(idx, :);
+        
+        errors = strcmp(cellstr(g), cellstr(p));
         
         [orientation, v] = orientation_classifier.count_predited_flags(p);
         
@@ -32,7 +35,7 @@ function evaluate_model(model, dataset)
             ok = 'ERR';
         end
         
-        fprintf('Dataset %d Image %s: T%d => P%d (%.2f votes) %s\n', ...
-                image.Dataset, image.Image, image.Orientation, orientation, v, ok);
+        fprintf('Dataset %d Image %s: T%d => P%d (%.2f votes, %d errors) %s\n', ...
+                image.Dataset, image.Image, image.Orientation, orientation, v, sum(~errors), ok);
     end
 end
