@@ -7,6 +7,6 @@ function out = extract_orientation_features(image)
     out = table;
     
     out.Mean = mean(cols)';
-    out.Sigma = std(cols)';
+    out.Stdev = std(cols)';
     out.HOG = reshape(hog, 24, 64)';
 end

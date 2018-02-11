@@ -1,4 +1,4 @@
-function [out, t] = count_comparison_votes(comparisons, votes, region_count)
+function [out, v] = count_comparison_votes(comparisons, votes, region_count)
     a = (votes(:, 1) == '1');
     b = (votes(:, 2) == '1');
 
@@ -22,10 +22,10 @@ function [out, t] = count_comparison_votes(comparisons, votes, region_count)
     end
 
     % Scegli la regione con il massimo punteggio.
-    [t, out] = max(count);
+    [v, out] = max(count);
 
     % Nessuna regione è stata considerata rilevante dal classificatore.
-    if t <= 0
+    if v <= 0
         out = NaN;
     end
 end
