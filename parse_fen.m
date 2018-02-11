@@ -6,8 +6,8 @@ function board = parse_fen(fen)
     x = 1;
     y = 1;
 
-    for j = 1:numel(fen)
-       c = fen(j);
+    for i = 1:numel(fen)
+       c = fen(i);
     
         if isstrprop(c, 'digit')
             assert(x <= 8 && y <= 8, 'Riga della scacchiera troppo lunga.');

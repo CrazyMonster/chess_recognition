@@ -15,6 +15,7 @@ function evaluate_model(model, dataset)
     fprintf('\n');
     fprintf('<strong>Confusion Matrix (absolute)</strong>\n');
     disp(array2table(cm.cm_raw, 'VariableNames', plabels, 'RowNames', tlabels));
+    fprintf('\n');
     
     images = unique(dataset(:, {'Dataset', 'Image', 'Orientation'}));
     
