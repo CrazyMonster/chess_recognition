@@ -1,5 +1,4 @@
 function out = predict(image)
-    
     persistent classifier;
     
     if isempty(classifier)

@@ -45,20 +45,6 @@ function out = extract_features(ds)
     out = vertcat(features{:});
 end
 
-function out = board_info(fen)
-    board = parse_fen(fen);
-    
-    X = repmat((1:8)', 1, 8);
-    Y = repmat((1:8), 8, 1);
-    
-    is_empty = (board == '*');
-    is_white = (mod(X + Y, 2) == 0);
-
-    out = struct('Piece', num2cell(board), ...
-                 'X', num2cell(X), 'Y', num2cell(Y), ...
-                 'IsEmpty', num2cell(is_empty), 'IsWhite', num2cell(is_white));
-end
-
 function out = orientation_flags(board, orientation)
     flags = dec2bin(orientation - 1, 2);
     is_empty = [board.IsEmpty];
