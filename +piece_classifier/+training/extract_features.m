@@ -12,10 +12,15 @@ function out = extract_features(ds)
         % Segnala a MATLAB che questa è intenzionalmente una variabile broadcast. 
         [~] = path_for_asset;
         
-        path = path_for_asset(["tmp", "eq", l.Image], "jpg");
+        path = path_for_asset(["images", l.Image], "jpg");
         
-        image = imread(path);
+        image = lib.imread_rotate(path);
         board = board_info(l.BoardConfiguration);
+        points = squeeze(l.FramePoints);
+        
+        image = rgb2gray(image);
+        image = project_board(image, points, 'inner');
+        image = adapthisteq(image);
         
         f = piece_classifier.extract_piece_features(image);
 

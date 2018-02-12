@@ -1,6 +1,4 @@
 function out = extract_orientation_features(image)
-    image = image(9:520, 9:520);
-
     cols = im2col(double(image), [64 64], 'distinct');
     hog = extractHOGFeatures(image, 'CellSize', [32 32], 'NumBins', 6, 'BlockSize', [2 2], 'BlockOverlap', [0 0]);
     
