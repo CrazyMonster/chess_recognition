@@ -49,7 +49,7 @@ end
 
 %%
 parfor i = 1:size(ds.Labels, 1)
-   im = lib.imread_rotate(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
+   im = imread(['datasets/' num2str(id) '/images/' images{i} '.jpg']);
    
    gray = rgb2gray(im);
    
@@ -75,7 +75,7 @@ end
 % end
 %%
 parfor i = 1:size(ds.Labels, 1)
-   im = lib.imread_rotate(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
+   im = imread(['datasets/' num2str(id) '/tmp/gray/' images{i} '.jpg']);
    
    sharpened = imsharpen(im, 'Radius', 25);
    
@@ -120,7 +120,7 @@ end
 %%
 
 for i = 1:size(ds.Labels, 1)
-   im = lib.imread_rotate(['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
+   im = imread(['datasets/' num2str(id) '/tmp/sharpRadius/' images{i} '.jpg']);
    
    bw = lib.sauvola(im, [80,80]);
    
@@ -129,7 +129,7 @@ end
 
 %%
 parfor i =  1:size(ds.Labels, 1)
-   im = lib.imread_rotate(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
+   im = imread(['datasets/' num2str(id) '/tmp/bw80/' images{i} '.jpg']);
    edges = edge(im, 'Prewitt', 0.1);
    
    imwrite(edges, ['datasets/' num2str(id) '/tmp/edge/' images{i} '.png']);

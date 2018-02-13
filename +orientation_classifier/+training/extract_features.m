@@ -14,7 +14,7 @@ function out = extract_features(ds)
         
         path = path_for_asset(["images", l.Image], "jpg");
         
-        image = lib.imread_rotate(path);
+        image = imread(path);
         board = board_info(l.BoardConfiguration);
         points = squeeze(l.FramePoints);
         
