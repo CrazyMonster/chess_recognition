@@ -3,6 +3,8 @@ function out = extract_features(ds)
     labels = ds.Labels;
     path_for_asset = ds.path_for_asset;
     
+    cache = create_cache(ds.path_for_asset(["tmp", "orientation_classifier"], "dir"));
+    
     n = height(labels);
     features = cell(n, 4);
     
@@ -14,13 +16,11 @@ function out = extract_features(ds)
         
         path = path_for_asset(["images", l.Image], "jpg");
         
-        image = imread(path);
+        image = lazy(@imread, path);
         board = board_info(l.BoardConfiguration);
         points = squeeze(l.FramePoints);
         
-        image = rgb2gray(image);
-        image = project_board(image, points, 'inner');
-        image = adapthisteq(image);
+        image = orientation_classifier.preprocess_image(image, points, cache, l.Image);
         
         for o = 1:4
             f = orientation_classifier.extract_orientation_features(image);

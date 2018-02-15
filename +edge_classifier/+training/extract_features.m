@@ -3,7 +3,7 @@ function out = extract_features(ds)
     labels = ds.Labels;
     path_for_asset = ds.path_for_asset;
     
-    cache = create_cache(ds.path_for_asset("tmp", "dir"));
+    cache = create_cache(ds.path_for_asset(["tmp", "edge_classifier"], "dir"));
     
     n = height(labels);
     comparisons = cell(n, 1);
