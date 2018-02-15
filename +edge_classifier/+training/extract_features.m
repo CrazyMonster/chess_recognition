@@ -15,7 +15,9 @@ function out = extract_features(ds)
         [~] = path_for_asset;
         
         path = path_for_asset(["images", l.Image], "jpg");
+        
         image = lazy(@imread, path);
+        image = preprocess_image(image, true, cache, l.Image);
         
         f = edge_classifier.extract_edge_features(image, cache, l.Image);
         c = edge_classifier.compare_edge_regions(f);

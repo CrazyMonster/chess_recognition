@@ -6,15 +6,6 @@ function out = extract_edge_features(image, cache, id)
         id = NaN;
     end
 
-    % Downscale
-    % La dimensione desiderata lungo l'asse PIU' LUNGO dell'immagine di input.
-    n = 2048;
-
-    small = cache(["01.small", id], "jpg", @downscale, image, n);
-    
-    % Grayscale
-    gray = cache(["02.gray", id], "jpg", @rgb2gray, small);
-
     % Morphological Opening
     se_h = strel('rectangle', [4 8]);
     se_v = strel('rectangle', [8 4]);
@@ -64,16 +55,6 @@ function out = extract_edge_features(image, cache, id)
 
     out = cache(["10.edge_features", id], "mat", @aggregate_features, regions, lbp);
     out = lazy.gather(out);
-end
-
-function out = downscale(in, n)
-   [~, idx] = max(size(in));
-
-   if idx == 1
-       out = imresize(in, [n NaN]);
-   else
-       out = imresize(in, [NaN n]);
-   end
 end
 
 function out = opening(in, se_h, se_v)

@@ -20,7 +20,8 @@ function out = extract_features(ds)
         board = board_info(l.BoardConfiguration);
         points = squeeze(l.FramePoints);
         
-        image = orientation_classifier.preprocess_image(image, points, cache, l.Image);
+        image = preprocess_image(image, false, cache, l.Image);
+        image = preprocess_board(image, points, cache, l.Image);
         
         for o = 1:4
             f = orientation_classifier.extract_orientation_features(image);
