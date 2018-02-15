@@ -9,7 +9,7 @@ function out = preprocess_board(image, points, cache, id)
     projected = cache(["02.projected", id], "jpg", @project_board, image, points, 'inner');
     
     % CLAHE - Contrast Limited Adaptive Histogram Equalization
-    equalized = cache(["03.equalized", id], "jpg", @adapthisteq, projected);
+    equalized = cache(["03.equalized", id], "jpg", @adapthisteq, projected, 'NumTiles', [4 4]);
     
     out = lazy.gather(equalized);
 end
