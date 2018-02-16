@@ -21,7 +21,7 @@ function out = extract_features(ds)
         points = squeeze(l.FramePoints);
         
         image = preprocess_image(image, false, cache, l.Image);
-        image = preprocess_board(image, points, cache, l.Image);
+        image = preprocess_board(image, points, 'inner', cache, l.Image);
         
         for o = 1:4
             f = orientation_classifier.extract_orientation_features(image);

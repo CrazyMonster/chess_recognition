@@ -1,4 +1,4 @@
-function [out, t] = count_predited_flags(flags)
+function [out, t] = count_predicted_flags(flags)
     
     o = categorical(cellstr(flags), {'**', '*0', '*1', '00', '01', '10', '11'}, 'Protected', true);
     c = countcats(o);
