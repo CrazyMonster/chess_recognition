@@ -1,4 +1,4 @@
-function out = extract_edge_features(image, cache, id)
+function [out, labels] = extract_edge_features(image, cache, id)
 
     % Disabilita la cache se non viene fornita dal chiamante.
     if nargin < 3
@@ -10,7 +10,7 @@ function out = extract_edge_features(image, cache, id)
     se_h = strel('rectangle', [4 8]);
     se_v = strel('rectangle', [8 4]);
 
-    opened = cache(["03.opened", id], "jpg", @opening, gray, se_h, se_v);
+    opened = cache(["03.opened", id], "jpg", @opening, image, se_h, se_v);
 
     % Edge Detection
     thresholds = [];         % Scegli automaticamente i valori di threshold.
@@ -47,14 +47,16 @@ function out = extract_edge_features(image, cache, id)
         region = cache(["08.regions", id, j], "png", @(r, j) r.labels == j, regions, j);
 
         % Region mask
-        masked = cache(["09.masked", id, j], "jpg", @convex_mask, gray, region);
+        masked = cache(["09.masked", id, j], "jpg", @convex_mask, image, region);
 
         % LBP
-        lbp{j} = lazy(@(im) classification.compute_lbp(im), masked);
+        lbp{j} = lazy(@extractLBPFeatures, masked);
     end
 
     out = cache(["10.edge_features", id], "mat", @aggregate_features, regions, lbp);
     out = lazy.gather(out);
+
+    labels = regions.labels;
 end
 
 function out = opening(in, se_h, se_v)

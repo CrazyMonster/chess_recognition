@@ -6,10 +6,12 @@ function out = predict(image)
         classifier = m.model;
     end
     
-    f = edge_classifier.extract_edge_features(image);
+    [f, l] = edge_classifier.extract_edge_features(image);
     c = edge_classifier.compare_edge_regions(f);
     
     p = classifier.predictFcn(c);
     
-    out = edge_classifier.count_comparison_votes(c, p, height(f));
+    vote = edge_classifier.count_comparison_votes(c, p, height(f));
+    
+    out = (l == vote);
 end
