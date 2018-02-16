@@ -44,7 +44,7 @@ function out = detect_corners(image)
     in_bounds = (points(:, 1) >= 1 & points(:, 1) <= size(image, 2) & ...
                  points(:, 2) >= 1 & points(:, 2) <= size(image, 1));
              
-    out = points(in_bounds);
+    out = points(in_bounds, :);
     
     if size(out, 1) ~= 4
         warning('Trovati %d punti di intersezione invece che i 4 attesi.', size(out, 1));
