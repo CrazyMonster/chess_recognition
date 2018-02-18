@@ -42,11 +42,11 @@ function evaluate_model(model, dataset)
            continue; 
         end
             
-        if ~exist(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/'], 'dir')
-            mkdir(['datasets/' num2str(image.Dataset) '/tmp/11.predicted/']);
+        if ~exist(['datasets/' num2str(image.Dataset) '/tmp/predicted/'], 'dir')
+            mkdir(['datasets/' num2str(image.Dataset) '/tmp/predicted/']);
         end
         
-        copyfile(['datasets/' num2str(image.Dataset) '/tmp/08.regions/' char(image.Image) '/' num2str(roi) '.png'], ...
-                 ['datasets/' num2str(image.Dataset) '/tmp/11.predicted/' char(image.Image) '.png']);
+        copyfile(['datasets/' num2str(image.Dataset) '/tmp/edge_classifier/08.regions/' char(image.Image) '/' num2str(roi) '.png'], ...
+                 ['datasets/' num2str(image.Dataset) '/tmp/predicted/' char(image.Image) '.png']);
     end
 end
