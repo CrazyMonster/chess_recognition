@@ -27,16 +27,20 @@ function evaluate_model(model, dataset)
         p = predictions(idx, :);
         
         errors = strcmp(cellstr(g), cellstr(p));
+        nerrors = sum(~errors);
         
-        [orientation, v] = orientation_classifier.count_predited_flags(p);
+        [orientation, v] = orientation_classifier.count_predicted_flags(p);
         
-        if image.Orientation == orientation
-            ok = 'OK';
-        else
-            ok = 'ERR';
+        if nerrors > 0 
+            if image.Orientation == orientation
+                ok = 'OK';
+            else
+                fprintf('<strong>');
+                ok = 'ERR</strong>';
+            end
+            
+            fprintf('Dataset %d Image %s: T%d => P%d (%.2f votes, %d errors) %s\n', ...
+                    image.Dataset, image.Image, image.Orientation, orientation, v, nerrors, ok);
         end
-        
-        fprintf('Dataset %d Image %s: T%d => P%d (%.2f votes, %d errors) %s\n', ...
-                image.Dataset, image.Image, image.Orientation, orientation, v, sum(~errors), ok);
     end
 end
