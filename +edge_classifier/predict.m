@@ -11,7 +11,11 @@ function out = predict(image)
     
     p = classifier.predictFcn(c);
     
-    vote = edge_classifier.count_comparison_votes(c, p, height(f));
+    region = edge_classifier.count_comparison_votes(c, p, height(f));
     
-    out = (l == vote);
+    if isnan(region)
+        error('Nessuna regione trovata.');
+    end
+    
+    out = (l == region);
 end
