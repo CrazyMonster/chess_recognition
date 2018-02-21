@@ -6,5 +6,11 @@ function [cv, images] = create_cvpartition(ds)
     has_roi = ~isnan(images.Region_A);
     
     cv = cvpartition(has_roi, 'Holdout', 0.2);
+    
+    %     test = images(cv.test, :);
+    %     training = images(cv.training, :);
+    
+    %     test_cmp = innerjoin(ds, test(:, {'Dataset', 'Image'}));
+    %     training_cmp = innerjoin(ds, training(:, {'Dataset', 'Image'}));
 end
 
