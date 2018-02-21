@@ -1,4 +1,4 @@
-function [trainedClassifier, validationAccuracy] = train_cubic_svm(trainingData, classificationSVM)
+function [trainedClassifier, validationAccuracy] = train_cubic_svm(trainingData)
 % [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % returns a trained classifier and its accuracy. This code recreates the
 % classification model trained in Classification Learner app. Use the
