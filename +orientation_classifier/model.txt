@@ -1,0 +1,96 @@
+>> ds = orientation_classifier.training.create_dataset(1:3);
+
+%% Load model.mat and cvpartition.mat
+
+>> test = images(cv.test, :);
+>> training = images(cv.training, :);
+>> test_cells = innerjoin(ds, test);
+>> training_cells = innerjoin(ds, training);
+
+>> orientation_classifier.training.evaluate_model(model, test_cells);
+
+Accuracy: 97.78%
+
+Confusion Matrix (relative)
+              P__          P_0           P00           P10           P_1           P11           P01    
+           _________    __________    __________    __________    __________    __________    __________
+
+    T__      0.99719    0.00037418    0.00037418    0.00056127    0.00037418    0.00074836    0.00037418
+    T_0     0.002223       0.95517    0.00074102     0.0011115      0.040756             0             0
+    T00    0.0047393     0.0063191       0.97314     0.0094787     0.0031596     0.0015798     0.0015798
+    T10    0.0061824      0.020093      0.023184       0.94436     0.0015456     0.0015456     0.0030912
+    T_1    0.0014981      0.023221             0             0       0.97453    0.00037453    0.00037453
+    T11    0.0063796             0     0.0031898             0     0.0063796       0.97608     0.0079745
+    T01    0.0063796     0.0047847     0.0015949     0.0031898     0.0063796      0.012759       0.96491
+
+
+Confusion Matrix (absolute)
+           P__     P_0     P00    P10    P_1     P11    P01
+           ____    ____    ___    ___    ____    ___    ___
+
+    T__    5330       2      2      3       2      4      2
+    T_0       6    2578      2      3     110      0      0
+    T00       3       4    616      6       2      1      1
+    T10       4      13     15    611       1      1      2
+    T_1       4      62      0      0    2602      1      1
+    T11       4       0      2      0       4    612      5
+    T01       4       3      1      2       4      8    605
+
+
+Dataset 1 Image 006: T2 => P2 (46.00 votes, 7 errors) OK
+Dataset 1 Image 013: T3 => P3 (46.00 votes, 1 errors) OK
+Dataset 1 Image 028: T3 => P3 (45.00 votes, 4 errors) OK
+Dataset 1 Image 040: T1 => P1 (40.50 votes, 8 errors) OK
+Dataset 1 Image 040: T2 => P2 (43.50 votes, 6 errors) OK
+Dataset 2 Image 002: T1 => P1 (46.50 votes, 1 errors) OK
+Dataset 2 Image 006: T4 => P4 (46.50 votes, 1 errors) OK
+Dataset 2 Image 019: T3 => P3 (33.50 votes, 22 errors) OK
+Dataset 2 Image 020: T3 => P3 (43.00 votes, 13 errors) OK
+Dataset 2 Image 021: T1 => P1 (42.00 votes, 15 errors) OK
+Dataset 2 Image 021: T2 => P2 (48.00 votes, 3 errors) OK
+Dataset 2 Image 021: T3 => P3 (41.50 votes, 16 errors) OK
+Dataset 2 Image 022: T1 => P1 (45.00 votes, 9 errors) OK
+Dataset 2 Image 022: T3 => P3 (43.50 votes, 7 errors) OK
+Dataset 2 Image 024: T4 => P4 (36.50 votes, 5 errors) OK
+Dataset 2 Image 025: T1 => P1 (45.50 votes, 2 errors) OK
+Dataset 2 Image 033: T3 => P3 (39.00 votes, 4 errors) OK
+Dataset 2 Image 033: T4 => P4 (44.00 votes, 4 errors) OK
+Dataset 2 Image 034: T3 => P3 (35.00 votes, 5 errors) OK
+Dataset 2 Image 041: T1 => P1 (45.00 votes, 9 errors) OK
+Dataset 2 Image 053: T2 => P2 (45.50 votes, 2 errors) OK
+Dataset 2 Image 053: T3 => P3 (44.50 votes, 4 errors) OK
+Dataset 2 Image 060: T2 => P2 (45.50 votes, 1 errors) OK
+Dataset 2 Image 060: T4 => P4 (45.00 votes, 2 errors) OK
+Dataset 2 Image 063: T1 => P1 (48.00 votes, 1 errors) OK
+Dataset 2 Image 065: T2 => P2 (45.50 votes, 1 errors) OK
+Dataset 2 Image 065: T3 => P3 (45.50 votes, 1 errors) OK
+Dataset 2 Image 072: T3 => P3 (47.00 votes, 1 errors) OK
+Dataset 2 Image 076: T1 => P1 (31.50 votes, 6 errors) OK
+Dataset 2 Image 076: T3 => P3 (37.50 votes, 4 errors) OK
+Dataset 2 Image 076: T4 => P4 (28.50 votes, 7 errors) OK
+Dataset 2 Image 078: T1 => P1 (49.50 votes, 1 errors) OK
+Dataset 2 Image 078: T4 => P4 (49.50 votes, 1 errors) OK
+Dataset 2 Image 081: T1 => P1 (51.00 votes, 4 errors) OK
+Dataset 3 Image 012: T1 => P1 (34.50 votes, 4 errors) OK
+Dataset 3 Image 015: T2 => P2 (43.00 votes, 6 errors) OK
+Dataset 3 Image 016: T1 => P1 (45.50 votes, 1 errors) OK
+Dataset 3 Image 020: T2 => P2 (72.50 votes, 1 errors) OK
+Dataset 3 Image 032: T2 => P2 (43.00 votes, 1 errors) OK
+Dataset 3 Image 033: T3 => P3 (40.50 votes, 2 errors) OK
+Dataset 3 Image 033: T4 => P4 (43.50 votes, 1 errors) OK
+Dataset 3 Image 034: T1 => P1 (43.00 votes, 1 errors) OK
+Dataset 3 Image 034: T4 => P4 (43.50 votes, 1 errors) OK
+Dataset 3 Image 037: T2 => P2 (47.50 votes, 9 errors) OK
+Dataset 3 Image 037: T3 => P3 (36.50 votes, 13 errors) OK
+Dataset 3 Image 045: T2 => P2 (49.00 votes, 1 errors) OK
+Dataset 3 Image 048: T2 => P2 (47.00 votes, 5 errors) OK
+Dataset 3 Image 048: T3 => P3 (44.50 votes, 5 errors) OK
+Dataset 3 Image 049: T1 => P1 (43.50 votes, 1 errors) OK
+Dataset 3 Image 050: T2 => P2 (36.00 votes, 10 errors) OK
+Dataset 3 Image 050: T4 => P4 (41.50 votes, 4 errors) OK
+Dataset 3 Image 051: T2 => P2 (43.00 votes, 1 errors) OK
+Dataset 3 Image 052: T2 => P2 (39.50 votes, 3 errors) OK
+Dataset 3 Image 052: T3 => P3 (40.00 votes, 2 errors) OK
+Dataset 3 Image 054: T3 => P3 (46.00 votes, 2 errors) OK
+Dataset 3 Image 073: T1 => P1 (35.50 votes, 13 errors) OK
+Dataset 3 Image 073: T2 => P2 (27.50 votes, 29 errors) OK
