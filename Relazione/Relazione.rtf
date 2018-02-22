@@ -1,10 +1,10 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
 {\fonttbl\f0\fnil\fcharset0 HelveticaNeue-Bold;\f1\fnil\fcharset0 HelveticaNeue;\f2\fnil\fcharset0 Menlo-Regular;
 }
-{\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red83\green83\blue83;\red220\green161\blue13;
-}
-{\*\expandedcolortbl;;\cssrgb\c27059\c27059\c27059;\csgray\c40016;\cssrgb\c89412\c68627\c3922;
-}
+{\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red83\green83\blue83;\red251\green2\blue7;
+\red251\green2\blue7;\red0\green0\blue0;\red220\green161\blue13;}
+{\*\expandedcolortbl;;\cssrgb\c27059\c27059\c27059;\csgray\c40016;\cssrgb\c100000\c14913\c0;
+\cssrgb\c100000\c14913\c0;\cssrgb\c0\c0\c0;\cssrgb\c89412\c68627\c3922;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat2\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid201\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
@@ -39,86 +39,138 @@ Fase 4: creazione della stringa fen\
 Motivare input e scelta dei parametri\
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 \cf2 \
-ALGORITMO
+ALGORITMO\
+
 \fs26 \cf0 \
 
 \fs24 \cf2 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
 \f2\fs22 \cf3 function fen = recognize_chess_pieces(image)\
-    % \
+\cf4     % 
+\f1\fs24 Preprocessing
+\f2\fs22 \cf3 \
     image = preprocess_image(image, true);\
        \
-    % Estrai la cornice della scacchiera.\
+\cf4     % Ricerca della cornice della scacchiera con classificatore.\cf3 \
    	frame = edge_classifier.predict(image);\
     \
-    % Estrai gli angoli della scacchiera\
+\cf4     % Estrazione gli angoli della scacchiera\cf3 \
     corners = detect_corners(frame);\
     \
-    % Effettua la proiezione e l'equalizzazione dell'istogramma\
-    % dell'immagine\
-    board = preprocess_board(image, corners, 'outer');\
+    \cf4 % Ritaglio, protezione e preprocessing sulla scacchiera (equalizzazione dell'istogramma dell'immagine)\
+\cf3     board = preprocess_board(image, corners, 'outer');\
     \
-    % \
+   \cf4  % correzione dell\'92orientamento con classificatore\cf3 \
     orientation = orientation_classifier.predict(board);\
-    \
     upright = rot90(board, orientation - 1);\
     \
+\cf4 	% classificazione dei pezzi \cf3 \
     fen = piece_classifier.predict(upright);\
 end\
-\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\pard\pardeftab560\slleading20\partightenfactor0
 
 \f1\fs24 \cf2 \
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf2 \
+\
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
-\cf2 \
+\cf2 1. PREPROCESSING\
 preprocess_image 
 \fs26 \cf0 \'e8 una funzione che unifica la fase di preprocessing dei tre classificatori. Viene disabilitata la 
 \b cache
-\b0  se non viene fornita dal chiamante. Effettuiamo il downscale alla dimensione 2048 sul lato pi\'f9 lungo (perch\'e8 2048?) (se non viene fornito il parametro viene effettuato il downscale di default) \
+\b0  se non viene fornita dal chiamante. Effettuiamo il 
+\b downscale
+\b0  alla dimensione 2048 sul lato pi\'f9 lungo (perch\'e8 2048?) (se non viene fornito il parametro viene effettuato il downscale di default). Convertita l\'92immagine in 
+\b grayscale
+\b0 . \
 \
+
+\fs24 \cf2 2. EDGE-DETECTION
+\fs26 \cf0 \
+
+\b opening morfologico
+\b0  con due elementi strutturali a rettangolo; 
+\b Edge detector canny
+\b0  (con valori di default scelti automaticamente + due filtri Gaussiani per smoothing Gaussians).\
+
+\b Edge linking
+\b0  (massimo gap 1px per unire gli edge spezzati)\
+
+\b Filtraggio
+\b0  componenti connesse formate dagli 
+\b edge, 
+\b0 tramite due parametri, area e eccentricit\'e0, Rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >=70 (paletti)\
+
+\b Region props
+\b0  delle regioni (componenti connesse) rimaste per l\'92estrazione delle 
+\b features
+\b0 \
 \
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\fs24 \cf2 \
-\
-\pard\pardeftab560\sa40\partightenfactor0
-
-\f0\b\fs28 \cf2 1 Edge detection-classifier: \
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\f1\b0\fs24 \cf2 \ul \ulc2 estrazione delle feature\ulnone :\
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\f0\b \cf2 Input
-\f1\b0 : immagini del dataset\
-Downscale dell\'92immagine (perch\'e9)\
-Grayscale\
-Image opening \
-Canny edge detection (all\'92interno avviene lo smoothing gaussiano)\
-Linking degli edge spezzati (massimo gap 1px)\
-Rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >=70 (paletti)\
-Region props delle regioni rimaste\
-Contorni delle regioni\
+\i\fs24 \cf2 Contorni delle regioni\
 Minimo insieme connesso\
-
-\f0\b Output
-\f1\b0 : immagini della regione\
-Estraggo gli LBP\
-Features per ogni componente connessa filtrata \
-\
- \ul scelta delle regioni\
 \pard\pardeftab560\slleading20\partightenfactor0
-\cf2 \ulnone  \ul Detection delle intersezioni\
+
+\b \cf2 Output
+\b0 : immagini della regione\
+Estraggo gli LBP
+\i0\fs26 \cf0 \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf0 \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\i\fs24 \cf2 Features per ogni componente connessa filtrata \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\i0\fs26 \cf0 \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf0 Prodotto cartesiano delle componenti connesse: Crea una tabella in cui vengono confrontate tutte le coppie di regioni di questa immagine. Sfrutta il fatto che RegionCount \'e8 uguale per tutte le regioni per implementare il 
+\b prodotto cartesiano
+\b0  con la funzione innerjoin(...).
+\i \
 \
 \
+Aggregazione della classificazione della coppie di componenti connesse\
 \
-\ulnone Proiezioni e ritaglio\
-Orientamento\
+
+\i0 Classificatore pairwise:  centiamo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl300\slmult1\pardirnatural\partightenfactor0
+\cf0 se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\fs24 \cf2 \ul \ulc2 \
+
+\f2\fs22 \cf3 \ulnone 3. DETECTION INTERSEZIONI/CORNERS \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+
+\f1\i\fs26 \cf0 Estrae gli angoli della scacchiera da un'immagine di edge : ( threshold = 0.2;	neighborhood = [151 9] spiegazione di questi parametri)
+\i0 \
+
+\i Costruisci la 
+\b trasformata di Hough
+\b0  dell'immagine di edge, 
+\i0 trova i picchi nella matrice di Hough (4 = numpeaks che sono gli angoli/rette). Estrai i parametri delle rette trovate da HOUGHPEAKS. ??\
+Trasformiamo gli angoli da gradi a radianti e costruiamo la rappresentazione delle rette in coordinate omogenee. Generiamo le coppie di rette delle quali calcolare le intersezioni e quindi calcoliamo i punti di intersezione per ogni coppia di rette in coordinate omogenee tramite il prodotto vettoriale. Convertiamo i punti in coordinate cartesiane e scartiamo le intersezioni fuori dai confini dell'immagine.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+
+\f2\fs22 \cf3  4. RITAGLIO, PROTEZIONE E PREPROCESSING SULLA SCACCHIERA (EQUALIZZAZIONE DELL'ISTOGRAMMA DELL'IMMAGINE)\cf5  
+\f1 \cf6 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+
+\fs26 \cf6 Grayscale,  proiezione, equalizzazione dell'istogramma dell'immagine (Contrast Limited Adaptive Histogram Equalization)\
+Riordina i punti in senso orario, Costruisci la matrice di trasformazione prospettica, (   Gestisci sia gli angoli esterni che quelli interni del bordo della scacchiera.)\
+Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera se necessario.\
+  
+\f2\fs22 \cf3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+\cf3 4. ORIENTAMENTO\
+\
+5. CLASSIFICAZIONE PEZZI\
+
+\f1\fs24 \cf2 \
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
-\
 \
 \
 \
@@ -130,7 +182,7 @@ Orientamento\
 \pard\pardeftab560\slleading20\partightenfactor0
 
 \f1\b0\fs24 \cf2 	\'93Use of the Hough transform on noisy images is a very delicate matter and generally, a denoising stage must be used before."\
-	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Hough_transform"}}{\fldrslt \cf4 https://en.wikipedia.org/wiki/Hough_transform}}\
+	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Hough_transform"}}{\fldrslt \cf7 https://en.wikipedia.org/wiki/Hough_transform}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\slleading20\partightenfactor0
@@ -143,7 +195,7 @@ Orientamento\
 \f0\b\fs28 \cf2 Blur Invariant Descriptors\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/"}}{\fldrslt \cf4 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/}}\
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/"}}{\fldrslt \cf7 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
@@ -151,7 +203,7 @@ Orientamento\
 \f0\b\fs28 \cf2 Edge detection\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf"}}{\fldrslt \cf4 http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf}}\
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf"}}{\fldrslt \cf7 http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf}}\
 	http://www.vis.uky.edu/~ryang/Teaching/cs635-2016spring/Lectures/12-edge.pdf\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
@@ -161,7 +213,7 @@ Orientamento\
 \pard\pardeftab560\slleading20\partightenfactor0
 
 \f1\b0\fs24 \cf2 	Font: Chess M\'e9rida\
-	Notazione: {\field{\*\fldinst{HYPERLINK "https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards"}}{\fldrslt \cf4 https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards}}\
+	Notazione: {\field{\*\fldinst{HYPERLINK "https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards"}}{\fldrslt \cf7 https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
@@ -177,7 +229,7 @@ Orientamento\
 \f0\b\fs28 \cf2 Intersezioni di linee\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Using_homogeneous_coordinates"}}{\fldrslt \cf4 https://en.wikipedia.org/wiki/Line\'96line_intersection#Using_homogeneous_coordinates}}\
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Using_homogeneous_coordinates"}}{\fldrslt \cf7 https://en.wikipedia.org/wiki/Line\'96line_intersection#Using_homogeneous_coordinates}}\
 	http://robotics.stanford.edu/~birch/projective/node4.html\
 	Ordinamento: convex hull \
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
