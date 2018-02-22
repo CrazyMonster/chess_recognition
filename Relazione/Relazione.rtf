@@ -5,11 +5,9 @@
 \red251\green2\blue7;\red0\green0\blue0;\red220\green161\blue13;}
 {\*\expandedcolortbl;;\cssrgb\c27059\c27059\c27059;\csgray\c40016;\cssrgb\c100000\c14913\c0;
 \cssrgb\c100000\c14913\c0;\cssrgb\c0\c0\c0;\cssrgb\c89412\c68627\c3922;}
-{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
-{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat2\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
-{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid201\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
-{\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid302\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid4}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid2\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
 \paperw11900\paperh16840\margl1440\margr1440\vieww25400\viewh16000\viewkind0
 \deftab560
 \pard\pardeftab560\partightenfactor0
@@ -88,12 +86,19 @@ preprocess_image
 \fs26 \cf0 \
 
 \b opening morfologico
-\b0  con due elementi strutturali a rettangolo; 
+\b0  con due elementi strutturali a rettangolo (
+\fs24 \cf2 un rettangolo dovrebbe rilevare le linee verticali e uno quelle orizzontali
+\fs26 \cf0 ) per potenziare il contorno della scacchiera ovvero le linee verticali ed orizzontali 
+\fs24 \cf2 (Normalizzate in double) 
+\fs26 \cf0 : closing, in modo che le parti bianche diventino pi\'f9 chiare e i piccoli dettagli spariscano, rendendo pi\'f9 evidente il contorno. \ul Moltiplico tra di loro con .* in questo modo, nel risultato hai un pixel chiaro solo se in entrambe c\'92\'e8 un pixel chiaro: \ulnone linee rilevate in una o nell\'92altra immagine diventano scure ovvero la cornice diventa pi\'f9 scura rispetto al resto dell\'92immagine, edge pi\'f9 forte.\
+
 \b Edge detector canny
 \b0  (con valori di default scelti automaticamente + due filtri Gaussiani per smoothing Gaussians).\
 
 \b Edge linking
-\b0  (massimo gap 1px per unire gli edge spezzati)\
+\b0  (massimo gap 1px per unire gli edge spezzati) (occhio alla funzione 
+\b filledgegaps
+\b0 )\
 
 \b Filtraggio
 \b0  componenti connesse formate dagli 
@@ -136,6 +141,18 @@ Aggregazione della classificazione della coppie di componenti connesse\
 \i0 Classificatore pairwise:  centiamo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl300\slmult1\pardirnatural\partightenfactor0
 \cf0 se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
+\
+
+\b Classificazione dei contorni delle scacchiere
+\b0 \
+Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.40\
+Recall: 43 scacchiere rilevate su 48 totali (89,5%)\
+Precision: 43 scacchiere su 47 regioni individuate (91,5%)\
+\
+Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.60\
+Recall: 47 scacchiere rilevate su 48 totali (97,9%)\
+Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
+\
 \pard\pardeftab560\slleading20\partightenfactor0
 
 \fs24 \cf2 \ul \ulc2 \
@@ -165,6 +182,38 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 \f2\fs22 \cf3 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 \cf3 4. ORIENTAMENTO\
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f1\b\fs28 \cf2 Orientamento:	\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\b0\fs24 \cf2 classificatore molto semplice che risolve il problema di trovare l\'92orientamento della scacchiera. \
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\fs28 \cf2 Problemi
+\b \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\b0\fs24 \cf2 	per stabilire l\'92orientamento di una scacchiera:\
+\pard\pardeftab560\pardirnatural\partightenfactor0
+\ls1\ilvl1\cf2 {\listtext	1.	}utilizzare il descrittore HOG su tutta l\'92immagine e addestrare il classificatore a riconoscere l\'92orientamento dell\'92intera scacchiera. 
+\b Data-Augmentation
+\b0 : Ruotato manualmente le varie scacchiere in tutti i loro orientamenti.\uc0\u8232 \ul PROBLEMA\ulnone : classificatore estremamente complicato con migliaia di features e solo 207x4=828 observations (immagini di training: 207 immagini per ogni orientamento); 92% accuracy\
+{\listtext	2.	}orientamento della singola cella usando solo 26 features (media varianza e 24 di HOG); 95.5%\
+{\listtext	3.	}predizione dell\'92orientamento di una singola cella, ottenendo un classificatore con 166 features e 207*4*64=52.992 observations 97.75%\uc0\u8232 \ul PROBLEMA:\ulnone  in alcuni casi l\'92analisi della cella non da alcuna informazione sull\'92orientamento della cella: es cella bianca e vuota nessuna informazione e cella vuota nera pu\'f2 dare informazione solo su due orientamenti;\
+{\listtext	4.	}addestramento del classificatore facendogli raggruppare le celle vuote in classi diverse da quelle contenenti un pezzo etc.. (pesi); \
+{\listtext	5.	}decidere i 
+\b pesi
+\b0  da assegnare alle occorrenze di ogni classe di orientamento: le celle nere vuote corrispondono a due orientamenti diversi e sono sensibili alla sfocatura dell\'92immagine quindi abbiamo constatato che pesare significativamente meno delle celle contenenti un pezzo fornisce risultati migliori. 100% accuracy a livello di immagine\
+{\listtext	6.	}\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+
+\f2\fs22 \cf3 \
+\
 \
 5. CLASSIFICAZIONE PEZZI\
 
@@ -235,24 +284,13 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\pardirnatural\partightenfactor0
-\ls1\ilvl0\cf2 {\listtext	0.	}carichiamo il nostro dataset usando readtable. manteniamo i nomi delle colonne. opzioni: la prima colonna \'e8 caricata come char.\
+\ls2\ilvl0\cf2 {\listtext	0.	}carichiamo il nostro dataset usando readtable. manteniamo i nomi delle colonne. opzioni: la prima colonna \'e8 caricata come char.\
 \pard\pardeftab560\slleading20\partightenfactor0
 \cf2 \
 funzioni private accessibili da \'85\
 \
 \
-\pard\pardeftab560\pardirnatural\partightenfactor0
-\ls2\ilvl0\cf2 {\listtext	0.	} DETECTION SCACCHIERA: usare elementi strutturanti nel preprocessing per detect_lines. In sostanza per potenziare il contorno della scacchiera gli ho sempre fatto un closing, in modo che le parti bianche diventino pi\'f9 chiare e piccoli dettagli spariscano, rendendo pi\'f9 evidente il contorno. Fino ad ora lo facevo con uno strel quadrato, che funzionava abbastanza bene, ma aveva il limite che non si poteva ingrandire troppo perch\'e9 altrimenti faceva sparire anche il contorno. Il limite era un quadrato 4x4, altrimenti nella 022 spariva... prove con due rettangoli, 6x3 e 3x6: un rettangolo dovrebbe rilevare le linee verticali e uno quelle orizzontali:  applico entrambi gli strel all\'92immagine originale, ottengo un\'92immagine in cui vengono potenziare le linee verticali e una quelle orizzontali (Normalizzate in double). Dopodich\'e9 le moltiplico tra di loro con .*In questo modo, nel risultato hai un pixel chiaro solo se in entrambe c\'92\'e8 un pixel chiaro Quindi le linee che vengono rilevate in una o nell\'92altra immagine diventano scure L\'92effetto \'e8 che la cornice diventa pi\'f9 scura rispetto al resto dell\'92immagine, ottenendo un edge pi\'f9 forte\
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf2 \
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\f0\b \cf2 Preprocessing
-\f1\b0 : \
-Grayscale, Downscale, Opening (per davvero questa volta ahahah) usando due linee | e \'97 come elementi strutturanti, smoothing Gaussiano con sigma=2.5, Canny edge detection e alla fine filtro le regioni con Area > 900 e Eccentricit\'e0 < 0.6\
-(Considerando che Canny fa gi\'e0 di suo uno smoothing gaussiano, si pu\'f2 evitare di fare un altro smoothing aumentando il sigma che usa Canny)\
 \
-aggiunta  la funzione filledgegaps con massima lunghezza di gap = 1\
 \
 \pard\pardeftab560\partightenfactor0
 
@@ -260,16 +298,6 @@ aggiunta  la funzione filledgegaps con massima lunghezza di gap = 1\
 \pard\pardeftab560\slleading20\partightenfactor0
 
 \f1\b0\fs24 \cf2 \
-\
-\pard\pardeftab560\pardirnatural\partightenfactor0
-\ls3\ilvl0\cf2 {\listtext	\uc0\u8259 	}estrazione celle\
-\ls3\ilvl0{\listtext	\uc0\u8259 	}classificatore/descrittore\
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-\cf2 \
-\
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf2 Classificatore: preprocessing sulle celle\
-applico un elemento strutturante a sfera/cerchio + opening per rimuovere le linee di sfondo delle celle nere\
 \
 \
 -> toy case\
@@ -314,65 +342,16 @@ summary(categorical(cellstr(T.Labels)));\
      q         79 \
      r        158 \
 	\
-\
-\
-CVpartition\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf2 passando il vettore di label: porzione dei valori costante nel dataset di training e di test. aggiunta delle condizioni nelle label (tipo descrittori (?)). \
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-\cf2 \
-\
 \pard\pardeftab560\slleading20\partightenfactor0
 \cf2 http://www.academia.edu/22168310/Chess_Piece_Recognition_using_Machine_Learning_Technique\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \
-\pard\pardeftab560\sa40\partightenfactor0
-
-\f0\b\fs28 \cf2 Classificazione dei contorni delle scacchiere\
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-
-\f1\b0\fs24 \cf2 \
-\pard\pardeftab560\slleading20\partightenfactor0
-\cf2 Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.40\
-Recall: 43 scacchiere rilevate su 48 totali (89,5%)\
-Precision: 43 scacchiere su 47 regioni individuate (91,5%)\
 \
-Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.60\
-Recall: 47 scacchiere rilevate su 48 totali (97,9%)\
-Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
-\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
-\cf2 \
 \
-\pard\pardeftab560\sa40\partightenfactor0
-
-\f0\b\fs28 \cf2 Orientamento:	\
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\f1\b0\fs24 \cf2 classificatore molto semplice che risolve il problema di trovare l\'92orientamento della scacchiera. \
-\
-\pard\pardeftab560\sa40\partightenfactor0
-
-\fs28 \cf2 Problemi
-\f0\b \
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\f1\b0\fs24 \cf2 	per stabilire l\'92orientamento di una scacchiera:\
-\pard\pardeftab560\pardirnatural\partightenfactor0
-\ls4\ilvl1\cf2 {\listtext	1.	}utilizzare il descrittore HOG su tutta l\'92immagine e addestrare il classificatore a riconoscere l\'92orientamento dell\'92intera scacchiera. 
-\f0\b Data-Augmentation
-\f1\b0 : Ruotato manualmente le varie scacchiere in tutti i loro orientamenti.\uc0\u8232 \ul PROBLEMA\ulnone : classificatore estremamente complicato con migliaia di features e solo 207x4=828 observations (immagini di training: 207 immagini per ogni orientamento); 92% accuracy\
-\ls4\ilvl1{\listtext	2.	}orientamento della singola cella usando solo 26 features (media varianza e 24 di HOG); 95.5%\
-\ls4\ilvl1{\listtext	3.	}predizione dell\'92orientamento di una singola cella, ottenendo un classificatore con 166 features e 207*4*64=52.992 observations 97.75%\uc0\u8232 \ul PROBLEMA:\ulnone  in alcuni casi l\'92analisi della cella non da alcuna informazione sull\'92orientamento della cella: es cella bianca e vuota nessuna informazione e cella vuota nera pu\'f2 dare informazione solo su due orientamenti;\
-\ls4\ilvl1{\listtext	4.	}addestramento del classificatore facendogli raggruppare le celle vuote in classi diverse da quelle contenenti un pezzo etc.. (pesi); \
-\ls4\ilvl1{\listtext	5.	}decidere i 
-\f0\b pesi
-\f1\b0  da assegnare alle occorrenze di ogni classe di orientamento: le celle nere vuote corrispondono a due orientamenti diversi e sono sensibili alla sfocatura dell\'92immagine quindi abbiamo constatato che pesare significativamente meno delle celle contenenti un pezzo fornisce risultati migliori. 100% accuracy a livello di immagine\
-\ls4\ilvl1{\listtext	6.	}\
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 \cf2 \
-\
 \
 }
