@@ -1,4 +1,4 @@
-function fen = recognize_chess_pieces(image)
+function fen = recognize_chess_pieces(image, visualize)
     % Riduci l'immagine a massimo 2048px per lato e convertila in scala 
     % di grigi.
     image = preprocess_image(image, true);
@@ -20,4 +20,8 @@ function fen = recognize_chess_pieces(image)
     
     % Riconosci i pezzi sulla scacchiera.
     fen = piece_classifier.predict(upright);
+      
+    if nargin < 2 || visualize
+        plot_board(image, tform, fen);
+    end 
 end
