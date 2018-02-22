@@ -1,0 +1,326 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fnil\fcharset0 HelveticaNeue-Bold;\f1\fnil\fcharset0 HelveticaNeue;\f2\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red83\green83\blue83;\red220\green161\blue13;
+}
+{\*\expandedcolortbl;;\cssrgb\c27059\c27059\c27059;\csgray\c40016;\cssrgb\c89412\c68627\c3922;
+}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat2\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid201\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid302\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid4}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww25400\viewh16000\viewkind0
+\deftab560
+\pard\pardeftab560\partightenfactor0
+
+\f0\b\fs34 \cf2 Progetto Elaborazione delle Immagini 2017-2018\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf2 \
+\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 colore non rilevante nel riconoscimento (?)\
+\
+20 slide di presentazione\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 Dataset aggiuntivo di 159 immagini acquisite in varie condizioni (sfondi, ombre, riflessi di luci, deformazione prospettica, sfocatura) e con vari dispositivi.\
+Per tutte le immagini con cui abbiamo lavorato, abbiamo etichettato manualmente le stringhe fen, le coordinate degli angoli della scacchiera e le componenti connesse corrispondente al bordo esterno della scacchiera.\
+\
+Diagramma di flusso dei vari step dell\'92algoritmo \
+\
+Fase 1: analisi delle caratteristiche e problemi e preprocessing (immagini di esempio)\
+Fase 2: localizzazione scacchiera, resize, rotazione, proiezione, celle.\
+Fase 3: valutazione del riconoscimento e analisi dei risultati vari (percentuali, schemi, matrici di confusione), definire i casi di fallimento e i limiti dell\'92algoritmo\
+Fase 4: creazione della stringa fen\
+\
+Motivare input e scelta dei parametri\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf2 \
+ALGORITMO
+\fs26 \cf0 \
+
+\fs24 \cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+
+\f2\fs22 \cf3 function fen = recognize_chess_pieces(image)\
+    % \
+    image = preprocess_image(image, true);\
+       \
+    % Estrai la cornice della scacchiera.\
+   	frame = edge_classifier.predict(image);\
+    \
+    % Estrai gli angoli della scacchiera\
+    corners = detect_corners(frame);\
+    \
+    % Effettua la proiezione e l'equalizzazione dell'istogramma\
+    % dell'immagine\
+    board = preprocess_board(image, corners, 'outer');\
+    \
+    % \
+    orientation = orientation_classifier.predict(board);\
+    \
+    upright = rot90(board, orientation - 1);\
+    \
+    fen = piece_classifier.predict(upright);\
+end\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+
+\f1\fs24 \cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf2 \
+preprocess_image 
+\fs26 \cf0 \'e8 una funzione che unifica la fase di preprocessing dei tre classificatori. Viene disabilitata la 
+\b cache
+\b0  se non viene fornita dal chiamante. Effettuiamo il downscale alla dimensione 2048 sul lato pi\'f9 lungo (perch\'e8 2048?) (se non viene fornito il parametro viene effettuato il downscale di default) \
+\
+\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\fs24 \cf2 \
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 1 Edge detection-classifier: \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 \ul \ulc2 estrazione delle feature\ulnone :\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f0\b \cf2 Input
+\f1\b0 : immagini del dataset\
+Downscale dell\'92immagine (perch\'e9)\
+Grayscale\
+Image opening \
+Canny edge detection (all\'92interno avviene lo smoothing gaussiano)\
+Linking degli edge spezzati (massimo gap 1px)\
+Rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >=70 (paletti)\
+Region props delle regioni rimaste\
+Contorni delle regioni\
+Minimo insieme connesso\
+
+\f0\b Output
+\f1\b0 : immagini della regione\
+Estraggo gli LBP\
+Features per ogni componente connessa filtrata \
+\
+ \ul scelta delle regioni\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 \ulnone  \ul Detection delle intersezioni\
+\
+\
+\
+\ulnone Proiezioni e ritaglio\
+Orientamento\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\
+\
+\
+\
+\
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Hough Transform\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	\'93Use of the Hough transform on noisy images is a very delicate matter and generally, a denoising stage must be used before."\
+	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Hough_transform"}}{\fldrslt \cf4 https://en.wikipedia.org/wiki/Hough_transform}}\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 	Rectangle detection\
+	https://stackoverflow.com/questions/1364976/rectangle-detection-with-hough-transform/1683845#1683845\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Blur Invariant Descriptors\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/"}}{\fldrslt \cf4 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/}}\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Edge detection\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf"}}{\fldrslt \cf4 http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf}}\
+	http://www.vis.uky.edu/~ryang/Teaching/cs635-2016spring/Lectures/12-edge.pdf\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Dettagli del progetto\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	Font: Chess M\'e9rida\
+	Notazione: {\field{\*\fldinst{HYPERLINK "https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards"}}{\fldrslt \cf4 https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards}}\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Learning to rank\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	https://en.m.wikipedia.org/wiki/Learning_to_rank\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Intersezioni di linee\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Using_homogeneous_coordinates"}}{\fldrslt \cf4 https://en.wikipedia.org/wiki/Line\'96line_intersection#Using_homogeneous_coordinates}}\
+	http://robotics.stanford.edu/~birch/projective/node4.html\
+	Ordinamento: convex hull \
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\pardirnatural\partightenfactor0
+\ls1\ilvl0\cf2 {\listtext	0.	}carichiamo il nostro dataset usando readtable. manteniamo i nomi delle colonne. opzioni: la prima colonna \'e8 caricata come char.\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 \
+funzioni private accessibili da \'85\
+\
+\
+\pard\pardeftab560\pardirnatural\partightenfactor0
+\ls2\ilvl0\cf2 {\listtext	0.	} DETECTION SCACCHIERA: usare elementi strutturanti nel preprocessing per detect_lines. In sostanza per potenziare il contorno della scacchiera gli ho sempre fatto un closing, in modo che le parti bianche diventino pi\'f9 chiare e piccoli dettagli spariscano, rendendo pi\'f9 evidente il contorno. Fino ad ora lo facevo con uno strel quadrato, che funzionava abbastanza bene, ma aveva il limite che non si poteva ingrandire troppo perch\'e9 altrimenti faceva sparire anche il contorno. Il limite era un quadrato 4x4, altrimenti nella 022 spariva... prove con due rettangoli, 6x3 e 3x6: un rettangolo dovrebbe rilevare le linee verticali e uno quelle orizzontali:  applico entrambi gli strel all\'92immagine originale, ottengo un\'92immagine in cui vengono potenziare le linee verticali e una quelle orizzontali (Normalizzate in double). Dopodich\'e9 le moltiplico tra di loro con .*In questo modo, nel risultato hai un pixel chiaro solo se in entrambe c\'92\'e8 un pixel chiaro Quindi le linee che vengono rilevate in una o nell\'92altra immagine diventano scure L\'92effetto \'e8 che la cornice diventa pi\'f9 scura rispetto al resto dell\'92immagine, ottenendo un edge pi\'f9 forte\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f0\b \cf2 Preprocessing
+\f1\b0 : \
+Grayscale, Downscale, Opening (per davvero questa volta ahahah) usando due linee | e \'97 come elementi strutturanti, smoothing Gaussiano con sigma=2.5, Canny edge detection e alla fine filtro le regioni con Area > 900 e Eccentricit\'e0 < 0.6\
+(Considerando che Canny fa gi\'e0 di suo uno smoothing gaussiano, si pu\'f2 evitare di fare un altro smoothing aumentando il sigma che usa Canny)\
+\
+aggiunta  la funzione filledgegaps con massima lunghezza di gap = 1\
+\
+\pard\pardeftab560\partightenfactor0
+
+\f0\b\fs34 \cf2 Classificazione\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 \
+\
+\pard\pardeftab560\pardirnatural\partightenfactor0
+\ls3\ilvl0\cf2 {\listtext	\uc0\u8259 	}estrazione celle\
+\ls3\ilvl0{\listtext	\uc0\u8259 	}classificatore/descrittore\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 Classificatore: preprocessing sulle celle\
+applico un elemento strutturante a sfera/cerchio + opening per rimuovere le linee di sfondo delle celle nere\
+\
+\
+-> toy case\
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Dataset 1\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 label : \
+ summary(categorical(cellstr(vector)));\
+     B      48 \
+     K      48 \
+     N      54 \
+     P      54 \
+     Q      42 \
+     R      66 \
+     b      36 \
+     k      48 \
+     n      42 \
+     p      60 \
+     r      24\
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Dataset 1+2+3\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 \
+summary(categorical(cellstr(T.Labels)));\
+     *      10682 \
+     B        266 \
+     K        207 \
+     N        195 \
+     P        335 \
+     Q        188 \
+     R        222 \
+     b        134 \
+     k        207 \
+     n        221 \
+     p        354 \
+     q         79 \
+     r        158 \
+	\
+\
+\
+CVpartition\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 passando il vettore di label: porzione dei valori costante nel dataset di training e di test. aggiunta delle condizioni nelle label (tipo descrittori (?)). \
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 http://www.academia.edu/22168310/Chess_Piece_Recognition_using_Machine_Learning_Technique\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Classificazione dei contorni delle scacchiere\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf2 \
+\pard\pardeftab560\slleading20\partightenfactor0
+\cf2 Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.40\
+Recall: 43 scacchiere rilevate su 48 totali (89,5%)\
+Precision: 43 scacchiere su 47 regioni individuate (91,5%)\
+\
+Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.60\
+Recall: 47 scacchiere rilevate su 48 totali (97,9%)\
+Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+\cf2 \
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\f0\b\fs28 \cf2 Orientamento:	\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 classificatore molto semplice che risolve il problema di trovare l\'92orientamento della scacchiera. \
+\
+\pard\pardeftab560\sa40\partightenfactor0
+
+\fs28 \cf2 Problemi
+\f0\b \
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f1\b0\fs24 \cf2 	per stabilire l\'92orientamento di una scacchiera:\
+\pard\pardeftab560\pardirnatural\partightenfactor0
+\ls4\ilvl1\cf2 {\listtext	1.	}utilizzare il descrittore HOG su tutta l\'92immagine e addestrare il classificatore a riconoscere l\'92orientamento dell\'92intera scacchiera. 
+\f0\b Data-Augmentation
+\f1\b0 : Ruotato manualmente le varie scacchiere in tutti i loro orientamenti.\uc0\u8232 \ul PROBLEMA\ulnone : classificatore estremamente complicato con migliaia di features e solo 207x4=828 observations (immagini di training: 207 immagini per ogni orientamento); 92% accuracy\
+\ls4\ilvl1{\listtext	2.	}orientamento della singola cella usando solo 26 features (media varianza e 24 di HOG); 95.5%\
+\ls4\ilvl1{\listtext	3.	}predizione dell\'92orientamento di una singola cella, ottenendo un classificatore con 166 features e 207*4*64=52.992 observations 97.75%\uc0\u8232 \ul PROBLEMA:\ulnone  in alcuni casi l\'92analisi della cella non da alcuna informazione sull\'92orientamento della cella: es cella bianca e vuota nessuna informazione e cella vuota nera pu\'f2 dare informazione solo su due orientamenti;\
+\ls4\ilvl1{\listtext	4.	}addestramento del classificatore facendogli raggruppare le celle vuote in classi diverse da quelle contenenti un pezzo etc.. (pesi); \
+\ls4\ilvl1{\listtext	5.	}decidere i 
+\f0\b pesi
+\f1\b0  da assegnare alle occorrenze di ogni classe di orientamento: le celle nere vuote corrispondono a due orientamenti diversi e sono sensibili alla sfocatura dell\'92immagine quindi abbiamo constatato che pesare significativamente meno delle celle contenenti un pezzo fornisce risultati migliori. 100% accuracy a livello di immagine\
+\ls4\ilvl1{\listtext	6.	}\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+\cf2 \
+\
+\
+}
