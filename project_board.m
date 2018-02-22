@@ -1,13 +1,4 @@
-function out = project_board(image, points, location)
-    % Riordina i punti in senso orario.
-    convex = convhull(points);
-    
-    movingPoints = points(convex(1:4), :);
-    fixedPoints = [0 0; 1 0; 1 1; 0 1];
-
-    % Costruisci la matrice di trasformazione prospettica.
-    tform = fitgeotrans(movingPoints, fixedPoints, 'projective');
-    
+function out = project_board(image, tform, location)
     % Gestisci sia gli angoli esterni che quelli interni del bordo della 
     % scacchiera.
     if location == 'outer'
