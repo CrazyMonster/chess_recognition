@@ -1,13 +1,14 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
-{\fonttbl\f0\fnil\fcharset0 HelveticaNeue-Bold;\f1\fnil\fcharset0 HelveticaNeue;\f2\fnil\fcharset0 Menlo-Regular;
-}
+{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 Menlo-Regular;\f2\fswiss\fcharset0 ArialMT;
+\f3\froman\fcharset0 Times-Roman;}
 {\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red83\green83\blue83;\red251\green2\blue7;
-\red251\green2\blue7;\red0\green0\blue0;\red220\green161\blue13;}
+\red0\green0\blue0;\red255\green255\blue255;\red220\green161\blue13;}
 {\*\expandedcolortbl;;\cssrgb\c27059\c27059\c27059;\csgray\c40016;\cssrgb\c100000\c14913\c0;
-\cssrgb\c100000\c14913\c0;\cssrgb\c0\c0\c0;\cssrgb\c89412\c68627\c3922;}
+\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c89412\c68627\c3922;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid2\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}
-{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{none\}}{\leveltext\leveltemplateid101\'00;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
 \paperw11900\paperh16840\margl1440\margr1440\vieww25400\viewh16000\viewkind0
 \deftab560
 \pard\pardeftab560\partightenfactor0
@@ -15,7 +16,7 @@
 \f0\b\fs34 \cf2 Progetto Elaborazione delle Immagini 2017-2018\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 
-\f1\b0\fs24 \cf2 \
+\b0\fs24 \cf2 \
 \
 \pard\pardeftab560\slleading20\partightenfactor0
 \cf2 colore non rilevante nel riconoscimento (?)\
@@ -44,10 +45,10 @@ ALGORITMO\
 \fs24 \cf2 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\f2\fs22 \cf3 function fen = recognize_chess_pieces(image)\
+\f1\fs22 \cf3 function fen = recognize_chess_pieces(image)\
 \cf4     % 
-\f1\fs24 Preprocessing
-\f2\fs22 \cf3 \
+\f0\fs24 Preprocessing
+\f1\fs22 \cf3 \
     image = preprocess_image(image, true);\
        \
 \cf4     % Ricerca della cornice della scacchiera con classificatore.\cf3 \
@@ -68,7 +69,7 @@ ALGORITMO\
 end\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\fs24 \cf2 \
+\f0\fs24 \cf2 \
 \
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 \cf2 1. PREPROCESSING\
@@ -84,8 +85,9 @@ preprocess_image
 
 \fs24 \cf2 2. EDGE-DETECTION
 \fs26 \cf0 \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\b opening morfologico
+\b \cf0 opening morfologico
 \b0  con due elementi strutturali a rettangolo (
 \fs24 \cf2 un rettangolo dovrebbe rilevare le linee verticali e uno quelle orizzontali
 \fs26 \cf0 ) per potenziare il contorno della scacchiera ovvero le linee verticali ed orizzontali 
@@ -106,50 +108,41 @@ preprocess_image
 \b0 tramite due parametri, area e eccentricit\'e0, Rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >=70 (paletti)\
 
 \b Region props
-\b0  delle regioni (componenti connesse) rimaste per l\'92estrazione delle 
-\b features
-\b0 \
-\
-\pard\pardeftab560\slleading20\partightenfactor0
+\b0  delle regioni (componenti connesse degli edge) rimaste per l\'92estrazione delle 
+\b features 
+\b0 ed 
+\fs24 \cf2 estrazione degli
+\i  
+\b LBP 
+\i0\b0 per ogni regione delle varie immagini entra sul 
+\i Minimo insieme convesso -> maschera (applicata sull\'92immagine originale)
+\b .
+\i0\b0\fs26 \cf0 \
 
-\i\fs24 \cf2 Contorni delle regioni\
-Minimo insieme connesso\
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\b \cf2 Output
-\b0 : immagini della regione\
-Estraggo gli LBP
-\i0\fs26 \cf0 \
-\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
-\cf0 \
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\i\fs24 \cf2 Features per ogni componente connessa filtrata \
-\pard\pardeftab560\slleading20\partightenfactor0
-
-\i0\fs26 \cf0 \
-\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
-\cf0 Prodotto cartesiano delle componenti connesse: Crea una tabella in cui vengono confrontate tutte le coppie di regioni di questa immagine. Sfrutta il fatto che RegionCount \'e8 uguale per tutte le regioni per implementare il 
+\b Prodotto cartesiano
+\b0  delle componenti connesse: Crea una tabella in cui vengono 
+\b confrontate
+\b0  tutte le 
+\b coppie
+\b0  di regioni di questa immagine (Sfrutta il fatto che RegionCount \'e8 uguale per tutte le regioni per implementare il 
 \b prodotto cartesiano
-\b0  con la funzione innerjoin(...).
+\b0  con la funzione innerjoin(\'85)).
 \i \
-\
-\
-Aggregazione della classificazione della coppie di componenti connesse\
-\
 
-\i0 Classificatore pairwise:  centiamo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl300\slmult1\pardirnatural\partightenfactor0
-\cf0 se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
-\
+\i0\b Classificatore pairwise
+\b0 .\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\b Classificazione dei contorni delle scacchiere
+\i\b \cf0 Aggregazione della classificazione delle coppie di componenti connesse
+\b0 : 
+\i0 conti amo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio, se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
+
+\i \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\pardirnatural\partightenfactor0
+
+\i0\b \cf0 Classificazione dei contorni delle scacchiere
 \b0 \
-Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.40\
-Recall: 43 scacchiere rilevate su 48 totali (89,5%)\
-Precision: 43 scacchiere su 47 regioni individuate (91,5%)\
-\
-Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.60\
+Smooth \uc0\u963  = 2.5, Area > 900 e Eccentricit\'e0 < 0.70\
 Recall: 47 scacchiere rilevate su 48 totali (97,9%)\
 Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
 \
@@ -157,10 +150,10 @@ Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
 
 \fs24 \cf2 \ul \ulc2 \
 
-\f2\fs22 \cf3 \ulnone 3. DETECTION INTERSEZIONI/CORNERS \
+\f1\fs22 \cf3 \ulnone 3. DETECTION INTERSEZIONI/CORNERS \
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\f1\i\fs26 \cf0 Estrae gli angoli della scacchiera da un'immagine di edge : ( threshold = 0.2;	neighborhood = [151 9] spiegazione di questi parametri)
+\f0\i\fs26 \cf0 Estrae gli angoli della scacchiera da un'immagine di edge : ( threshold = 0.2;	neighborhood = [151 9] spiegazione di questi parametri)
 \i0 \
 
 \i Costruisci la 
@@ -171,21 +164,20 @@ Trasformiamo gli angoli da gradi a radianti e costruiamo la rappresentazione del
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\f2\fs22 \cf3  4. RITAGLIO, PROTEZIONE E PREPROCESSING SULLA SCACCHIERA (EQUALIZZAZIONE DELL'ISTOGRAMMA DELL'IMMAGINE)\cf5  
-\f1 \cf6 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+\f1\fs22 \cf3  4. RITAGLIO, PROTEZIONE E PREPROCESSING SULLA SCACCHIERA (EQUALIZZAZIONE DELL'ISTOGRAMMA DELL'IMMAGINE)\cf4  
+\f0 \cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\fs26 \cf6 Grayscale,  proiezione, equalizzazione dell'istogramma dell'immagine (Contrast Limited Adaptive Histogram Equalization)\
+\fs26 \cf5 Grayscale,  proiezione, equalizzazione dell'istogramma dell'immagine (Contrast Limited Adaptive Histogram Equalization)\
 Riordina i punti in senso orario, Costruisci la matrice di trasformazione prospettica, (   Gestisci sia gli angoli esterni che quelli interni del bordo della scacchiera.)\
 Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera se necessario.\
   
-\f2\fs22 \cf3 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
-\cf3 4. ORIENTAMENTO\
+\f1\fs22 \cf3 \
+4. ORIENTAMENTO\
 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f1\b\fs28 \cf2 Orientamento:	\
+\f0\b\fs28 \cf2 Orientamento:	\
 \pard\pardeftab560\slleading20\partightenfactor0
 
 \b0\fs24 \cf2 classificatore molto semplice che risolve il problema di trovare l\'92orientamento della scacchiera. \
@@ -212,12 +204,13 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 \cf2 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\f2\fs22 \cf3 \
+\f1\fs22 \cf3 \
 \
 \
 5. CLASSIFICAZIONE PEZZI\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\f1\fs24 \cf2 \
+\f0\fs24 \cf2 \
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \
@@ -225,12 +218,25 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 \
 \
 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl560\sa240\partightenfactor0
+\ls2\ilvl0
+\f2 \cf5 \cb6 - \expnd0\expndtw0\kerning0
+matrice di confusione \
+-risultati riportati sia per singola immagine che per l\'92intero dataset\
+-dettagliato il contributo di ciascun membro del gruppo
+\f3\fs20 \cb1 \uc0\u8232 
+\fs24 \
+\pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
+
+\f0 \cf2 \kerning1\expnd0\expndtw0 \
+\
+\
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Hough Transform\
+\b\fs28 \cf2 Hough Transform\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	\'93Use of the Hough transform on noisy images is a very delicate matter and generally, a denoising stage must be used before."\
+\b0\fs24 \cf2 	\'93Use of the Hough transform on noisy images is a very delicate matter and generally, a denoising stage must be used before."\
 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Hough_transform"}}{\fldrslt \cf7 https://en.wikipedia.org/wiki/Hough_transform}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
@@ -241,50 +247,50 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Blur Invariant Descriptors\
+\b\fs28 \cf2 Blur Invariant Descriptors\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/"}}{\fldrslt \cf7 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/}}\
+\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/"}}{\fldrslt \cf7 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4805711/}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Edge detection\
+\b\fs28 \cf2 Edge detection\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf"}}{\fldrslt \cf7 http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf}}\
+\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf"}}{\fldrslt \cf7 http://www.cse.psu.edu/~rtc12/CSE486/lecture05_6pp.pdf}}\
 	http://www.vis.uky.edu/~ryang/Teaching/cs635-2016spring/Lectures/12-edge.pdf\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Dettagli del progetto\
+\b\fs28 \cf2 Dettagli del progetto\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	Font: Chess M\'e9rida\
+\b0\fs24 \cf2 	Font: Chess M\'e9rida\
 	Notazione: {\field{\*\fldinst{HYPERLINK "https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards"}}{\fldrslt \cf7 https://it.wikipedia.org/wiki/Notazione_Forsyth-Edwards}}\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Learning to rank\
+\b\fs28 \cf2 Learning to rank\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	https://en.m.wikipedia.org/wiki/Learning_to_rank\
+\b0\fs24 \cf2 	https://en.m.wikipedia.org/wiki/Learning_to_rank\
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Intersezioni di linee\
+\b\fs28 \cf2 Intersezioni di linee\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Using_homogeneous_coordinates"}}{\fldrslt \cf7 https://en.wikipedia.org/wiki/Line\'96line_intersection#Using_homogeneous_coordinates}}\
+\b0\fs24 \cf2 	{\field{\*\fldinst{HYPERLINK "https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Using_homogeneous_coordinates"}}{\fldrslt \cf7 https://en.wikipedia.org/wiki/Line\'96line_intersection#Using_homogeneous_coordinates}}\
 	http://robotics.stanford.edu/~birch/projective/node4.html\
 	Ordinamento: convex hull \
 \pard\pardeftab560\slleading20\pardirnatural\partightenfactor0
 \cf2 \
 \pard\pardeftab560\pardirnatural\partightenfactor0
-\ls2\ilvl0\cf2 {\listtext	0.	}carichiamo il nostro dataset usando readtable. manteniamo i nomi delle colonne. opzioni: la prima colonna \'e8 caricata come char.\
+\ls3\ilvl0\cf2 {\listtext	0.	}carichiamo il nostro dataset usando readtable. manteniamo i nomi delle colonne. opzioni: la prima colonna \'e8 caricata come char.\
 \pard\pardeftab560\slleading20\partightenfactor0
 \cf2 \
 funzioni private accessibili da \'85\
@@ -294,39 +300,39 @@ funzioni private accessibili da \'85\
 \
 \pard\pardeftab560\partightenfactor0
 
-\f0\b\fs34 \cf2 Classificazione\
+\b\fs34 \cf2 Classificazione\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 \
+\b0\fs24 \cf2 \
 \
 \
 -> toy case\
 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Dataset 1\
+\b\fs28 \cf2 Dataset 1\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 label : \
+\b0\fs24 \cf2 label : \
  summary(categorical(cellstr(vector)));\
-     B      48 \
-     K      48 \
-     N      54 \
-     P      54 \
-     Q      42 \
-     R      66 \
-     b      36 \
-     k      48 \
-     n      42 \
-     p      60 \
-     r      24\
+     B   ;   48 \
+     K    ;  48 \
+     N     ; 54 \
+     P     ; 54 \
+     Q      ;42 \
+     R  ;    66 \
+     b   ;   36 \
+     k    ;  48 \
+     n     ; 42 \
+     p      ;60 \
+     r     ; 24\
 \
 \pard\pardeftab560\sa40\partightenfactor0
 
-\f0\b\fs28 \cf2 Dataset 1+2+3\
+\b\fs28 \cf2 Dataset 1+2+3\
 \pard\pardeftab560\slleading20\partightenfactor0
 
-\f1\b0\fs24 \cf2 \
+\b0\fs24 \cf2 \
 summary(categorical(cellstr(T.Labels)));\
      *      10682 \
      B        266 \
