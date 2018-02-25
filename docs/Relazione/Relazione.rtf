@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
 {\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 Menlo-Regular;\f2\fswiss\fcharset0 ArialMT;
 \f3\froman\fcharset0 Times-Roman;}
 {\colortbl;\red255\green255\blue255;\red53\green53\blue53;\red83\green83\blue83;\red251\green2\blue7;
@@ -78,7 +78,7 @@ preprocess_image
 \b cache
 \b0  se non viene fornita dal chiamante. Effettuiamo il 
 \b downscale
-\b0  alla dimensione 2048 sul lato pi\'f9 lungo (perch\'e8 2048?) (se non viene fornito il parametro viene effettuato il downscale di default). Convertita l\'92immagine in 
+\b0 , riducendo il lato pi\'f9 lungo dell\'92immagine a 2048px sul lato pi\'f9 lungo (perch\'e8 2048?) (se non viene fornito il parametro di default viene effettuato il downscale). Convertita l\'92immagine in 
 \b grayscale
 \b0 . \
 \
@@ -88,38 +88,58 @@ preprocess_image
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
 \b \cf0 opening morfologico
-\b0  con due elementi strutturali a rettangolo (
-\fs24 \cf2 un rettangolo dovrebbe rilevare le linee verticali e uno quelle orizzontali
+\b0  con due elementi strutturanti a rettangolo (
+\fs24 \cf2 un rettangolo rileva le linee verticali e uno quelle orizzontali
 \fs26 \cf0 ) per potenziare il contorno della scacchiera ovvero le linee verticali ed orizzontali 
 \fs24 \cf2 (Normalizzate in double) 
 \fs26 \cf0 : closing, in modo che le parti bianche diventino pi\'f9 chiare e i piccoli dettagli spariscano, rendendo pi\'f9 evidente il contorno. \ul Moltiplico tra di loro con .* in questo modo, nel risultato hai un pixel chiaro solo se in entrambe c\'92\'e8 un pixel chiaro: \ulnone linee rilevate in una o nell\'92altra immagine diventano scure ovvero la cornice diventa pi\'f9 scura rispetto al resto dell\'92immagine, edge pi\'f9 forte.\
+Parametri: dimensione dei rettangoli, 8x4px e 4x8px.\
+\
 
-\b Edge detector canny
-\b0  (con valori di default scelti automaticamente + due filtri Gaussiani per smoothing Gaussians).\
+\b Edge detector Canny
+\b0  \
+Parametri: strong e weak threshold, scelti automaticamente; sigma del filtro gaussiano, sqrt(2 + 2,5^2).\
+\
 
 \b Edge linking
-\b0  (massimo gap 1px per unire gli edge spezzati) (occhio alla funzione 
+\b0  per unire gli edge spezzati (occhio alla funzione 
 \b filledgegaps
 \b0 )\
+Parametri: lunghezza massima di gap, 1px.\
+\
+
+\b Labeling
+\b0  componenti connesse formate dagli 
+\b edge.
+\b0 \
+\
 
 \b Filtraggio
-\b0  componenti connesse formate dagli 
-\b edge, 
-\b0 tramite due parametri, area e eccentricit\'e0, Rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >=70 (paletti)\
+\b0  componenti connesse
+\b  
+\b0 tramite due parametri, area e eccentricit\'e0: rimozione componenti connesse con area <= 900 e quelle con eccentricit\'e0 >= 0,70.\
+\
 
 \b Region props
-\b0  delle regioni (componenti connesse degli edge) rimaste per l\'92estrazione delle 
-\b features 
-\b0 ed 
-\fs24 \cf2 estrazione degli
+\b0  delle regioni rimaste per l\'92estrazione delle 
+\b features\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
+
+\b0 \cf0 Feature estratte: Area, BoundingBox, Centroid, ConvexArea, Eccentricity, EquivDiameter, EulerNumber, Extent, FilledArea, MajorAxisLength, MinorAxisLength, Orientation, Perimeter, Solidity.
+\b \
+\
+
+\b0 E
+\fs24 \cf2 strazione degli
 \i  
 \b LBP 
 \i0\b0 per ogni regione delle varie immagini entra sul 
 \i Minimo insieme convesso -> maschera (applicata sull\'92immagine originale)
 \b .
 \i0\b0\fs26 \cf0 \
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\b Prodotto cartesiano
+\b \cf0 Prodotto cartesiano
 \b0  delle componenti connesse: Crea una tabella in cui vengono 
 \b confrontate
 \b0  tutte le 
@@ -135,9 +155,10 @@ preprocess_image
 
 \i\b \cf0 Aggregazione della classificazione delle coppie di componenti connesse
 \b0 : 
-\i0 conti amo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio, se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
+\i0 contiamo i voti assegnati dalle predizioni del classificatore, viene scelta la regione con il massimo punteggio, se il classificatore non individua nessuna regione di interesse ritorna un messaggio di errore.\
+\pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\i \
+\i \cf0 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\pardirnatural\partightenfactor0
 
 \i0\b \cf0 Classificazione dei contorni delle scacchiere
@@ -153,25 +174,43 @@ Precision: 47 scacchiere su 78 regioni individuate (60,3%)\
 \f1\fs22 \cf3 \ulnone 3. DETECTION INTERSEZIONI/CORNERS \
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 
-\f0\i\fs26 \cf0 Estrae gli angoli della scacchiera da un'immagine di edge : ( threshold = 0.2;	neighborhood = [151 9] spiegazione di questi parametri)
+\f0\i\fs26 \cf0 Estrae gli angoli della scacchiera da un'immagine di edge: \
+	numpeaks =
+\i0  4, il numero di rette desiderato.
+\i \
+	threshold = ceil(0.2 * max(H(:))), numero minimo di pixel che devono giacere su una certa linea perch\'e9 venga considerata, espresso come proporzione del massimo valore nella matrice di Hough.\
+	neighborhood = [151 9], regione che viene soppressa attorno ad un picco.\
+
 \i0 \
 
 \i Costruisci la 
 \b trasformata di Hough
 \b0  dell'immagine di edge, 
-\i0 trova i picchi nella matrice di Hough (4 = numpeaks che sono gli angoli/rette). Estrai i parametri delle rette trovate da HOUGHPEAKS. ??\
+\i0 trova i picchi nella matrice di Hough. Estrai i parametri delle rette trovate da HOUGHPEAKS. ??\
 Trasformiamo gli angoli da gradi a radianti e costruiamo la rappresentazione delle rette in coordinate omogenee. Generiamo le coppie di rette delle quali calcolare le intersezioni e quindi calcoliamo i punti di intersezione per ogni coppia di rette in coordinate omogenee tramite il prodotto vettoriale. Convertiamo i punti in coordinate cartesiane e scartiamo le intersezioni fuori dai confini dell'immagine.\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\f1\fs22 \cf3  4. RITAGLIO, PROTEZIONE E PREPROCESSING SULLA SCACCHIERA (EQUALIZZAZIONE DELL'ISTOGRAMMA DELL'IMMAGINE)\cf4  
+\f1\fs22 \cf3  4. RITAGLIO, PROTEZIONE E PREPROCESSING SULLA SCACCHIERA
 \f0 \cf5 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
 
-\fs26 \cf5 Grayscale,  proiezione, equalizzazione dell'istogramma dell'immagine (Contrast Limited Adaptive Histogram Equalization)\
-Riordina i punti in senso orario, Costruisci la matrice di trasformazione prospettica, (   Gestisci sia gli angoli esterni che quelli interni del bordo della scacchiera.)\
-Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera se necessario.\
-  
+\b\fs26 \cf5 Proiezione
+\b0 \
+Riordina i punti in senso orario,\
+Costruisci la matrice di trasformazione prospettica,\
+Proietta e ritaglia l'immagine,\
+Rimuovi il bordo della scacchiera se necessario \cf5  (Per gestire sia gli angoli esterni che quelli interni del bordo della scacchiera).\cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+\cf5 Parametri: risoluzione dell\'92immagine di output, 512x512 px.\cf5 \
+\
+
+\b \cf5 Contrast Limited Adaptive Histogram Equalization
+\b0 \cf5 \
+\cf5 Equalizzazione adattativa dell'istogramma dell'immagine.\
+Parametri: numero di tile in cui suddividere l\'92immagine, 4x4 (per avere 4 celle della scacchiera in ogni tile).\cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
+
 \f1\fs22 \cf3 \
 4. ORIENTAMENTO\
 \
@@ -199,7 +238,6 @@ Proietta e ritaglia l'immagine (512x512 px) e Rimuovi il bordo della scacchiera 
 {\listtext	5.	}decidere i 
 \b pesi
 \b0  da assegnare alle occorrenze di ogni classe di orientamento: le celle nere vuote corrispondono a due orientamenti diversi e sono sensibili alla sfocatura dell\'92immagine quindi abbiamo constatato che pesare significativamente meno delle celle contenenti un pezzo fornisce risultati migliori. 100% accuracy a livello di immagine\
-{\listtext	6.	}\
 \pard\tx566\tx1133\pardeftab560\pardirnatural\partightenfactor0
 \cf2 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab560\sl300\slmult1\slleading35\pardirnatural\partightenfactor0
