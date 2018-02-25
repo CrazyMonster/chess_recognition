@@ -8,7 +8,7 @@ function [out, t] = count_predicted_flags(flags)
     % - assegna peso nullo alle celle bianche vuote;
     % - assegna peso pari a 0.125 alle celle nere vuote per i due orientamenti 
     %   che possono assumere;
-    % - assegna pero pari a 0.875 alle celle contenenti un pezzo.
+    % - assegna peso pari a 0.875 alle celle contenenti un pezzo.
     
     w_empty = 0.125;
     w_full = 0.875;

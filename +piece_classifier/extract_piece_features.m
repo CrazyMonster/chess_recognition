@@ -2,7 +2,7 @@ function out = extract_piece_features(image)
 
     out = table;
     
-    % salvo in cols l'array colonna contenete le celle
+    % Salvo in cols l'array colonna contenente le celle
     cols = im2col(double(image), [64 64], 'distinct');
     board = board_info();
     
