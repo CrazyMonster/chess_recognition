@@ -11,6 +11,7 @@ function out = predict(image)
     
     board = reshape(p, 8, 8);
     
+    % Ritorna la configurazione FEN.
     out = serialize_fen(board);
 end
 

@@ -1,4 +1,5 @@
 function plot_board(image, tform, fen)
+    % Trasforma la configurazione FEN nella visualizzazione della scacchiera.
     s1 = subplot(1, 2, 1);
     cla(s1); hold on;
     
