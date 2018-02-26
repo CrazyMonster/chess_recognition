@@ -22,6 +22,9 @@ function out = detect_corners(image)
     theta = deg2rad(theta);
     
     % Costruisci la rappresentazione delle rette in coordinate omogenee.
+    %
+    % cos(theta)x + sin(theta)y - rho = 0;
+    % ax + by + c = 0 => [a, b, c];
     lines = [cos(theta), sin(theta), -rho];
     
     % Genera le coppie di rette delle quali calcolare le intersezioni.
