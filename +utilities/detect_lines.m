@@ -112,10 +112,12 @@ parfor i = 1:size(images, 1)
     labels = strcat('Retta #', num2str((1:size(P, 1))'));
     positions = [P(:, 2), P(:, 1), repmat(20, size(P, 1), 1)];
     
+    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2.png']);
+    
     c = insertObjectAnnotation(c, 'circle', positions, cellstr(labels), ...
                                'LineWidth', 3);
     
-    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2.png']);
+    imwrite(c, ['datasets/' num2str(id) '/tmp/hough/' images{i} '.2b.png']);
     
 %     f = ones(40, 1);
 %     b_ = imfilter(a, f);
@@ -156,10 +158,8 @@ function plot_lines(id, name, im, im2, T, R, P)
         x = [x1, x2];
         y = [y1, y2];
         
-        plot(x, y, 'LineWidth', 2, 'Color', colors(j, :));
+        h(j) = plot(x, y, 'LineWidth', 2, 'Color', colors(j, :));
     end
-    
-    legend(strcat('Retta #', num2str((1:numel(rho))')));
     
     % Intersection points
     n = numel(rho);
@@ -187,9 +187,9 @@ function plot_lines(id, name, im, im2, T, R, P)
                 intersections(:,2) >= 0 & intersections(:,2) <= size(im, 1);
     intersections = intersections(in_bounds, :);
     
-    for j = 1:size(intersections, 1)
-        plot(intersections(j,1), intersections(j,2), 'x', 'LineWidth', 2, 'Color', 'yellow');
-    end
+    plot(intersections(:,1), intersections(:,2), 'x', 'LineWidth', 2, 'Color', 'yellow');
+    
+    legend(h, strcat('Retta #', num2str((1:numel(rho))')));
     
     hold off;
     
