@@ -72,3 +72,7 @@ utilizzate nel progetto:
   * `+training` con le funzioni utilizzate per l'addestramentoe e la valutazione del modello;.
 * `+lib` contiene funzioni di terze parti scaricate da _MATLAB Central_ e altre fonti.
 * `+utilities` contiene vari script creati e utilizzati nello sviluppo ma che non fanno parte del normale flusso del progetto.
+
+## Autori
+
+Questo progetto è stato realizzato da Elia Cereda e Giorgia Adorni. 
